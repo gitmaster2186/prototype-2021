@@ -216,7 +216,7 @@ public class Robot extends TimedRobot {
         double nowTime = Timer.getFPGATimestamp();
 
         // are we done (timer expired)?
-        if ((nowTime - startTime) > fireTurrentTimeSeconds)
+        if ((nowTime - startTime) >= fireTurrentTimeSeconds)
         {
             stopFireTurret();
             stopFireTurretTimedCounter += 1;
