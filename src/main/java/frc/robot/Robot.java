@@ -14,6 +14,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -120,6 +121,12 @@ public class Robot extends TimedRobot {
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_2_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterLoadRoller   = new CANSparkMax(Constants.SPARK_NEO550_3_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_4_CAN_ID, MotorType.kBrushless);
+
+    private RelativeEncoder neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
+    //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
+    private RelativeEncoder neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller.getEncoder();   
+    //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
+   
     private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_1_CAN_ID);
     private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_2_CAN_ID);
   
@@ -160,7 +167,14 @@ public class Robot extends TimedRobot {
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
                                       neoDriveTrainFrontRight);
 
-    }
+        // put some motor velocity numbers on dashboard
+        SmartDashboard.putNumber("FrontIntake Velocity", 
+                                 neo550ShooterFrontIntakeEncoder.getVelocity());
+        SmartDashboard.putNumber("LoadRoller Velocity", 
+                                 neo550ShooterLoadRollerEncoder.getVelocity());
+        SmartDashboard.putNumber("flyWheel 1 velocity", 
+                                 falcon500ShooterFlyWheel1.getSelectedSensorVelocity());                         
+ }
      
     @Override
     public void teleopInit() {    
@@ -180,14 +194,18 @@ public class Robot extends TimedRobot {
         System.out.println("startIntake");
         neo550ShooterFrontIntake.set(Constants.INTAKE_ON);
         neo550ShooterRearIntake.set(Constants.INTAKE_ON);
-    }
+        SmartDashboard.putNumber("FrontIntake Velocity", 
+                                 neo550ShooterFrontIntakeEncoder.getVelocity());
+    }   
 
     private void stopIntake()
     {
       System.out.println("stopIntake");
       neo550ShooterFrontIntake.set(Constants.INTAKE_OFF);
       neo550ShooterRearIntake.set(Constants.INTAKE_OFF);
-  }
+      SmartDashboard.putNumber("FrontIntake Velocity", 
+                               neo550ShooterFrontIntakeEncoder.getVelocity());
+}
 
     private void RotateTurretLeft()
     {
@@ -266,14 +284,24 @@ public class Robot extends TimedRobot {
     }
 
     // run for a specified time to load ball into firing position
-    // do not load ball if flywheels are not up to speed
-    // 
+    // do not load ball if flywheels are not up to speed 
     private void InternalRollers(boolean buttonPressed)
     {
         
-        // !!!SID!!! FIX ME!!!! how do we get the motor speed of a falcon500?
+        // get the motor speed of the flywheels
+        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyWheel 2 velocity", vel1);
+        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
+
+        // !!!SID!!! FIX ME!!! don't allow the loader to load the ball until 
+        // the flywheels are up to speed?
         if (buttonPressed == true){
             neo550ShooterLoadRoller.set(Constants.LOADER_SPEED_ON);
+            SmartDashboard.putNumber("LoadRoller Velocity", 
+                                    neo550ShooterLoadRollerEncoder.getVelocity());
+
+
             // shooterActive = true;
             System.out.println("InternalRollers True");
         }
@@ -281,6 +309,8 @@ public class Robot extends TimedRobot {
             // shooterActive = false;
             //  !!!SID!!! FIX ME!!!! make stop faster
             neo550ShooterLoadRoller.set(Constants.LOADER_SPEED_OFF);
+            SmartDashboard.putNumber("LoadRoller Velocity", 
+                                    neo550ShooterLoadRollerEncoder.getVelocity());
             System.out.println("InternalRollers False");
         }
 
