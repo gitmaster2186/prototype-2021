@@ -227,9 +227,15 @@ public class Robot extends TimedRobot {
     // !!!SID!!! TBD - don't fire until flywheels are up to speed
     private void startFireTurret()
     {
-        //System.out.println("######FireTurret");
         falcon500ShooterFlyWheel1.set(Constants.FLYWHEEL_ON);
+        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        // falcon500ShooterFlyWheel1.getSelectedSensorPosition();
+        SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
+
         falcon500ShooterFlyWheel2.set(Constants.FLYWHEEL_ON);
+        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
+
         shooterActive = true;
         startFireTurretCounter += 1;
         SmartDashboard.putNumber("startFireTurretCounter", startFireTurretCounter);
@@ -241,7 +247,13 @@ public class Robot extends TimedRobot {
         {
             //System.out.println("@@@@@@@@stopFireTurret");
             falcon500ShooterFlyWheel1.set(Constants.FLYWHEEL_OFF);
+            double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+            SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
+
             falcon500ShooterFlyWheel2.set(Constants.FLYWHEEL_OFF);
+            double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+            SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
+
             shooterActive = false;
             stopFireTurretCounter += 1;
             SmartDashboard.putNumber("stopFireTurretCounter", stopFireTurretCounter);
