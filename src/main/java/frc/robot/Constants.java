@@ -17,15 +17,20 @@ public class Constants {
     public static final String LIMELIGHT_TARGET_AREA =  "ta";
     public static final String LIMELIGHT_LEDMODE = "ledMode";
 
-    public static int TOGGLE_INTAKE = 5; // left of central switch
-    public static int TURN_TURRET_LEFT = 3; // below button 5
-    public static int TURN_TURRET_RIGHT = 4; // below button6
+    // extreme 3dpro joystick button mapping
     public static int FIRE_TURRET = 1; // trigger
-    public static int DEPLOY_INTAKE = 7; // top left on base
+    public static int TOGGLE_TURRET_AIM_ASSIST = 2; //thumb button
+
+    public static int TURN_TURRET_LEFT = 3; // below and left of central switch
+    public static int TURN_TURRET_RIGHT = 4; // below and right of central switch
+
+    public static int TOGGLE_INTAKE = 5; // left of central switch
     public static int TOGGLE_INTERNAL_ROLLER = 6; // right of central switch
-    public static int DEBUG_BUTTON = 11; // bottom left on base
-    public static int TOGGLE_TURRET_AIM_ASSIST = 2; //tumb button
-    public static int FIRE_TURRET_TIMED = 8; // ???
+
+    public static int DEPLOY_INTAKE = 7; // top left outside on base
+    public static int FIRE_TURRET_TIMED = 8; // top left inside on base
+
+    public static int DEBUG_BUTTON = 11; // bottom left outside on base
 
 
     public static final int SPARK_NEO550_1_CAN_ID = 6;

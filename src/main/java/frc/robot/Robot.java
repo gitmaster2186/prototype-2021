@@ -283,7 +283,7 @@ public class Robot extends TimedRobot {
         System.out.println("DeployIntake");
     }
 
-    // run for a specified time to load ball into firing position
+    // run while button is pushed to load ball into firing position
     // do not load ball if flywheels are not up to speed 
     private void InternalRollers(boolean buttonPressed)
     {
