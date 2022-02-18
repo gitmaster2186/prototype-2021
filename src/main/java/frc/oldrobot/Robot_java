@@ -1,0 +1,225 @@
+/*
+ * TBD:
+ *    - change drivetrain motors to NEOs
+ *    - verify the vision alignment code
+ *    - vision alighnment mode 
+ *      - just advise driver with dashboard info
+ *      - implement angle alignment mode
+ *      - add distance adjustment mode
+ *    - put actual code in stub routines
+ *    - get agreement on button assignments
+ *
+ */
+package frc.robot;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+//`import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
+
+/**
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
+ */
+public class Robot extends TimedRobot {
+    // Constants such as camera and target height stored. Change per robot and goal!
+    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+    final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    // Angle between horizontal and the camera.
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+
+    // How far from the target we want to be
+    final double GOAL_RANGE_METERS = Units.feetToMeters(3);
+
+    // Change this to match the name of your camera
+    PhotonCamera camera = new PhotonCamera("rpiCam1");
+
+    // PID constants should be tuned per robot
+    final double LINEAR_P = 0.1;
+    final double LINEAR_D = 0.0;
+    PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
+
+    final double ANGULAR_P = 0.1;
+    final double ANGULAR_D = 0.0;
+
+
+    final double INCREMENT = 0.25;
+    final double LOW_IN_LIMIT = -1.0;
+    final double HIGH_IN_LIMIT = 1.0;
+    
+    final double LOW_OUT_LIMIT_1 = 0.0;
+    final double HIGH_OUT_LIMIT_1 = 360.0;
+    
+    final double LOW_OUT_LIMIT_2 = -180.0;
+    final double HIGH_OUT_LIMIT_2 = 180.0;
+      
+    
+    PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+
+    //XboxController xboxController = new XboxController(0);
+    Joystick joystick = new Joystick(0);
+
+    // Drive motors
+    PWMVictorSPX leftMotor = new PWMVictorSPX(0);
+    PWMVictorSPX rightMotor = new PWMVictorSPX(1);
+    DifferentialDrive drive = new DifferentialDrive(leftMotor, rightMotor);
+    
+    @Override
+    public void teleopInit() {    
+        camera.setLED(VisionLEDMode.kBlink);
+    }
+
+    // remap inVal from in min and max to out in min max ranges
+    double map(double inVal, double in_min, double in_max, double out_min, double out_max)
+    {
+      return (inVal - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
+    private void startIntake()
+    {
+        System.out.println("startIntake");
+    }
+
+    private void stopIntake()
+    {
+      //  System.out.println("stopIntake");
+    }
+
+    private void RotateTurretLeft()
+    {
+        System.out.println("RotateTurretLeft");
+    }
+
+    private void RotateTurretRight()
+    {
+        System.out.println("RotateTurretRight");
+    }
+
+    private void FireTurret()
+    {
+        System.out.println("FireTurret");
+    }
+
+    private void Deployintake()
+    {
+        System.out.println("DeployIntake");
+    }
+
+    private void InternalRollers()
+    {
+        System.out.println("InternalRollers");
+    }
+
+
+    @Override
+    // gets called 50 times a second
+    public void teleopPeriodic() {
+        double driveTrainForwardSpeed = 0.0;
+        double driveTrainRotationSpeed = 0.0;
+
+        // get forward speed from the right Y axis
+        driveTrainForwardSpeed = -joystick.getY();
+        // driveTrainForwardSpeed = -xboxController.getRightY();
+
+        camera.setLED(VisionLEDMode.kOff);
+        SmartDashboard.putBoolean("HasTarget", false);
+        SmartDashboard.putNumber("Targets", 0);
+
+        if (joystick.getRawButton(Constants.TOGGLE_INTAKE)) {
+            startIntake();
+        }
+        else{
+            stopIntake();
+        }
+
+        if (joystick.getRawButton(Constants.TURN_TURRET_LEFT)) {
+            RotateTurretLeft();
+        }
+
+        if (joystick.getRawButton(Constants.TURN_TURRET_RIGHT)){
+            RotateTurretRight();
+        }
+
+        if(joystick.getRawButton(Constants.FIRE_TURRET)){
+            FireTurret();
+        }
+
+        if(joystick.getRawButton(Constants.DEPLOY_INTAKE)){
+            Deployintake();
+        }
+
+        if(joystick.getRawButton(Constants.TOGGLE_INTERNAL_ROLLER)){
+            InternalRollers();
+        }
+
+        if (joystick.getRawButton(Constants.TOGGLE_TURRET_AIM_ASSIST)) {
+            // Vision-alignment mode
+
+            camera.setLED(VisionLEDMode.kOn);   // turn the LEDs on
+
+            // Query the latest result from PhotonVision
+            var result = camera.getLatestResult();
+            SmartDashboard.putBoolean("HasTarget", result.hasTargets());
+
+            if (result.hasTargets()) {
+                SmartDashboard.putNumber("Targets", result.getTargets().size());
+
+                // Calculate angular turn power
+                // -1.0 required to ensure positive PID controller effort _increases_ yaw
+                driveTrainRotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+
+                if (joystick.getRawButton(Constants.DEBUG_BUTTON)) {
+                    System.out.println("alignment -- fwd: " + driveTrainForwardSpeed + " rot: " + driveTrainRotationSpeed);
+                }
+            } else {
+                // If we have no targets, don't turn
+                driveTrainRotationSpeed = 0;
+                if (joystick.getRawButton(Constants.DEBUG_BUTTON)) {
+                    System.out.println("alignment -- no targets -- rotation 0");
+                }
+            }
+        } 
+        else {
+            // Manual Driver Mode
+            // get turning speed from the left X axis
+            driveTrainRotationSpeed = joystick.getX();
+
+            if (joystick.getRawButton(Constants.DEBUG_BUTTON)) {
+                System.out.println("manual -- fwd: " + driveTrainForwardSpeed + " rot: " + driveTrainRotationSpeed);
+            }
+        }
+
+        // -- start debug -- this chunk of code can be commented out for real runs
+
+        // Use our forward/turn speeds to control the drivetrain
+        // zRotation is rotation rate around the Z axis 
+        // clockwise is positive
+        // values: [-1.0..1.0] 
+
+        double angle = map(driveTrainRotationSpeed,
+                           LOW_IN_LIMIT,  HIGH_IN_LIMIT,
+                           LOW_OUT_LIMIT_2, HIGH_OUT_LIMIT_2);
+
+        if (joystick.getRawButton(Constants.DEBUG_BUTTON)) {
+            System.out.println("alignment -- fwd: " + driveTrainForwardSpeed + " rot: " + driveTrainRotationSpeed + " angle: " + angle);
+        }
+        // -- end debug -- this chunk of code can be commented out for real runs
+
+        SmartDashboard.putNumber("driveTrainForwardSpeed", driveTrainForwardSpeed);
+        SmartDashboard.putNumber("driveTrainRotationSpeed", driveTrainRotationSpeed);
+        SmartDashboard.putNumber("angle", angle);
+
+        // !!!SID!!!  - do we want to use tank drive instead?
+        drive.arcadeDrive(driveTrainForwardSpeed, driveTrainRotationSpeed);
+        // drive.tankDrive(leftSpeed, rightSpeed);
+    }
+}
