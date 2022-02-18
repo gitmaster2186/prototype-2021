@@ -227,7 +227,7 @@ public class Robot extends TimedRobot {
     // !!!SID!!! TBD - don't fire until flywheels are up to speed
     private void startFireTurret()
     {
-        System.out.println("######FireTurret");
+        //System.out.println("######FireTurret");
         falcon500ShooterFlyWheel1.set(Constants.FLYWHEEL_ON);
         falcon500ShooterFlyWheel2.set(Constants.FLYWHEEL_ON);
         shooterActive = true;
