@@ -32,21 +32,26 @@ public class Constants {
 
     public static int DEBUG_BUTTON = 11; // bottom left outside on base
 
+    public static final int TOGGLE_CLIMBER = 9;
 
-    public static final int SPARK_NEO550_1_CAN_ID = 6;
-    public static final int SPARK_NEO550_2_CAN_ID = 1;
-    public static final int SPARK_NEO550_3_CAN_ID = 8;
-    public static final int SPARK_NEO550_4_CAN_ID = 9;
+    public static final int SPARK_NEO550_INTAKE_1_CAN_ID = 6;
+    public static final int SPARK_NEO550_INTAKE_2_CAN_ID = 1;
+    public static final int SPARK_NEO550_TURRET_CAN_ID = 8;
+    public static final int SPARK_NEO550_ROLLER_1_CAN_ID = 9;
 
-    public static final int FALCON500_1_CAN_ID = 6;
-    public static final int FALCON500_2_CAN_ID = 2;
-    public static final int FALCON500_3_CAN_ID = 3;
-    public static final int FALCON500_4_CAN_ID = 4;
+    // climber
+    public static final int FALCON500_CLIMBER_1_CAN_ID = 3;
+    public static final int FALCON500_CLIMBER_2_CAN_ID = 6;
 
-    public static final int SPARK_NEO_1_CAN_ID = 3;
-    public static final int SPARK_NEO_2_CAN_ID = 5;
-    public static final int SPARK_NEO_3_CAN_ID = 2;
-    public static final int SPARK_NEO_4_CAN_ID = 7;
+    // shooter
+    public static final int FALCON500_SHOOTER_1_CAN_ID = 2;
+    public static final int FALCON500_SHOOTER_2_CAN_ID = 7;
+
+    // drivetrain
+    public static final int SPARK_NEO_DRIVETRAIN_1_CAN_ID = 3;
+    public static final int SPARK_NEO_DRIVETRAIN_2_CAN_ID = 5;
+    public static final int SPARK_NEO_DRIVETRAIN_3_CAN_ID = 2;
+    public static final int SPARK_NEO_DRIVETRAIN_4_CAN_ID = 7;
 
     public static final double INTAKE_ON  =  0.5;
     public static final double INTAKE_OFF =  0.0;
@@ -55,5 +60,11 @@ public class Constants {
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
     public static final double LOADER_SPEED_ON = 0.5;
     public static final double LOADER_SPEED_OFF = 0;
+
+    public static final double TURRET_ON = 0.1;
+    public static final double TURRET_LEFT_OFF = 0.0;
+    public static final double CLIMBER_SPEED_ON = 0.25;
+    public static final double CLIMBER_SPEED_OFF = 0;
+    
 
 }

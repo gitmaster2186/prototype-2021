@@ -111,27 +111,27 @@ public class Robot extends TimedRobot {
     // XboxController xboxController = new XboxController(Constants.DRIVER_XBOX_CONTROLLER);
 
     // Drive motors
-    private CANSparkMax neoDriveTrainFrontLeft    = new CANSparkMax(Constants.SPARK_NEO_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainFrontRight   = new CANSparkMax(Constants.SPARK_NEO_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainRearLeft     = new CANSparkMax(Constants.SPARK_NEO_3_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainRearRight    = new CANSparkMax(Constants.SPARK_NEO_4_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainFrontLeft    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_1_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainFrontRight   = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_2_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainRearLeft     = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_3_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainRearRight    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_4_CAN_ID, MotorType.kBrushless);
     DifferentialDrive drive;
 
-    private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoadRoller   = new CANSparkMax(Constants.SPARK_NEO550_3_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_4_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_1_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_2_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoadRoller   = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_1_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
     private RelativeEncoder neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
     //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
     private RelativeEncoder neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller.getEncoder();   
     //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
    
-    private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_1_CAN_ID);
-    private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_2_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_1_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_2_CAN_ID);
   
-    private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_3_CAN_ID);
-    private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_4_CAN_ID);
+    private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_1_CAN_ID);
+    private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_2_CAN_ID);
   
     //private Timer flyWheelFireTimer = new Timer();
     //private boolean flyWheelFireActive = false;
@@ -175,7 +175,36 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("flyWheel 1 velocity", 
                                  falcon500ShooterFlyWheel1.getSelectedSensorVelocity());                         
  }
-     
+
+ // turn climbers on or off
+ private void Climber(boolean buttonPressed)
+ {
+
+     // get the motor speed of the flywheels
+     double vel1 = falcon500Climber1.getSelectedSensorVelocity();
+     SmartDashboard.putNumber("climber 2 velocity", vel1);
+     double vel2 = falcon500Climber2.getSelectedSensorVelocity();
+     SmartDashboard.putNumber("climber 2 velocity", vel2);
+
+     if (buttonPressed == true){
+        falcon500Climber1.set(Constants.CLIMBER_SPEED_ON);
+        falcon500Climber2.set(Constants.CLIMBER_SPEED_ON);
+
+
+         // shooterActive = true;
+         System.out.println("climbers True");
+     }
+     else {
+         falcon500Climber1.set(Constants.CLIMBER_SPEED_OFF);
+         falcon500Climber2.set(Constants.CLIMBER_SPEED_OFF);
+
+         SmartDashboard.putNumber("climber Velocity", 
+                                  falcon500Climber1.getSelectedSensorVelocity());
+         System.out.println("InternalRollers False");
+     }
+ }
+
+
     @Override
     public void teleopInit() {    
         limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
@@ -207,14 +236,14 @@ public class Robot extends TimedRobot {
                                neo550ShooterFrontIntakeEncoder.getVelocity());
 }
 
-    private void RotateTurretLeft()
+    private void RotateTurret(double speed)
     {
-        System.out.println("RotateTurretLeft");
-    }
-
-    private void RotateTurretRight()
-    {
-        System.out.println("RotateTurretRight");
+        System.out.println("RotateTurret");
+        neo550ShooterTurret.set(speed);
+        /*
+            SmartDashboard.putNumber("FrontIntake Velocity", 
+                                 neo550ShooterFrontIntakeEncoder.getVelocity());
+        */
     }
 
     // !!!SID!!! - this ain't right!!!
@@ -230,16 +259,19 @@ public class Robot extends TimedRobot {
             startFireTurretTimedCounter += 1;
             SmartDashboard.putNumber("startFireTurretTimedCounter", startFireTurretTimedCounter);
         }
-
-        double nowTime = Timer.getFPGATimestamp();
-
-        // are we done (timer expired)?
-        if ((nowTime - startTime) >= fireTurrentTimeSeconds)
+        else
         {
-            stopFireTurret();
-            stopFireTurretTimedCounter += 1;
-            SmartDashboard.putNumber("stopFireTurretTimedCounter", stopFireTurretTimedCounter);
+            double nowTime = Timer.getFPGATimestamp();
+
+            // are we done (timer expired)?
+            if ((nowTime - startTime) >= fireTurrentTimeSeconds)
+            {
+                stopFireTurret();
+                stopFireTurretTimedCounter += 1;
+                SmartDashboard.putNumber("stopFireTurretTimedCounter", stopFireTurretTimedCounter);
+            }
         }
+
     }
 
     // !!!SID!!! TBD - don't fire until flywheels are up to speed
@@ -385,7 +417,7 @@ public class Robot extends TimedRobot {
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
          */
 
-
+        // tested - working
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE)){
             startIntake();
         }
@@ -394,11 +426,19 @@ public class Robot extends TimedRobot {
         }
 
         if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT)) {
-            RotateTurretLeft();
+            RotateTurret(Constants.TURRET_ON);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
+        {
+            RotateTurret(Constants.TURRET_LEFT_OFF);
         }
 
         if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT)){
-            RotateTurretRight();
+            RotateTurret(-Constants.TURRET_ON);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT))
+        {
+            RotateTurret(Constants.TURRET_LEFT_OFF);
         }
 
         // as long as the trigger is pushed keep firing
@@ -428,6 +468,14 @@ public class Robot extends TimedRobot {
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTERNAL_ROLLER))
         {
             InternalRollers(false);
+        }
+
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER)){
+            Climber(true);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER))
+        {
+            Climber(false);
         }
 
         if (altJoystick.getRawButton(Constants.TOGGLE_TURRET_AIM_ASSIST)) {
