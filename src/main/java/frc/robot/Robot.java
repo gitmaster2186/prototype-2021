@@ -24,22 +24,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-//import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Timer;
-
+import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Turret;
-
-// import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
-// import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-//import org.photonvision.PhotonCamera;
-// import org.photonvision.common.hardware.VisionLEDMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -143,15 +133,10 @@ public class Robot extends TimedRobot {
     private Turret turret = new Turret(neo550ShooterTurret);
     private Climber climber = new Climber(falcon500Climber1,
                                           falcon500Climber2);
-
+    private BallShooter ballShooter = new BallShooter(falcon500ShooterFlyWheel1, 
+                                                      falcon500ShooterFlyWheel2);
     //private Timer flyWheelFireTimer = new Timer();
     //private boolean flyWheelFireActive = false;
-    private boolean shooterActive = false;
-    private double startTime = 0;
-    private int startballShootTimedCounter = 0;
-    private int stopballShootTimedCounter = 0;
-    private int startFireBallCounter = 0;
-    private int stopFireBallCounter = 0;
 
     @Override
     public void robotInit()
@@ -200,72 +185,6 @@ public class Robot extends TimedRobot {
       return (inVal - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 */
-
-   
-    // !!!SID!!! - this ain't right!!!
-
-    /*
-     * a timer based shooter
-     * 
-     * objects used: 
-     */
-    private void ballShootTimed(double fireTurrentTimeSeconds)
-    {
-        // are we starting a new shot?
-        if (shooterActive == false)
-        {
-            startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
-            ballShootToggle(true);
-            startballShootTimedCounter += 1;
-            SmartDashboard.putNumber("startballShootTimedCounter", startballShootTimedCounter);
-        }
-        else
-        {
-            double nowTime = Timer.getFPGATimestamp();
-
-            // are we done (timer expired)?
-            if ((nowTime - startTime) >= fireTurrentTimeSeconds)
-            {
-                ballShootToggle(false);
-
-                stopballShootTimedCounter += 1;
-                SmartDashboard.putNumber("stopballShootTimedCounter", stopballShootTimedCounter);
-            }
-        }
-    }
-
-    /*
-     * toggle the ball shooter on/off
-     * 
-     * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
-     */
-    private void ballShootToggle(boolean buttonPressed)
-    {
-        double speed;
-        if (buttonPressed == false)
-        {
-            speed = Constants.FLYWHEEL_OFF;
-            shooterActive = false;
-            stopFireBallCounter += 1;
-            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
-        }
-        else
-        {
-            speed = Constants.FLYWHEEL_ON;
-            shooterActive = true;
-            startFireBallCounter += 1;
-            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
-        }
-
-        falcon500ShooterFlyWheel1.set(speed);
-        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
-
-        falcon500ShooterFlyWheel2.set(speed);
-        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
-    }
-    
 
     /*
      * toggle the loader rollers on/off
@@ -406,18 +325,18 @@ public class Robot extends TimedRobot {
         // as long as the trigger is pushed keep firing
         if(altJoystick.getRawButton(Constants.FIRE_TURRET))
         {
-            ballShootToggle(true);
+            ballShooter.toggle(true);
         }
         else
         {
-            ballShootToggle(false);
+            ballShooter.toggle(false);
         }
 
         // returns true if the button is being held down
         // at the time that this method is being called
         if(altJoystick.getRawButton(Constants.FIRE_TURRET_TIMED))
         {
-            ballShootTimed(1.0);
+            ballShooter.timed(1.0);
         }
 
 
