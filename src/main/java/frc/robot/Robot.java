@@ -133,6 +133,10 @@ public class Robot extends TimedRobot {
     private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_1_CAN_ID);
     private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_2_CAN_ID);
   
+    private Intake intake = new Intake(neo550ShooterFrontIntake, 
+                                       neo550ShooterRearIntake, 
+                                       neo550ShooterFrontIntakeEncoder);
+
     //private Timer flyWheelFireTimer = new Timer();
     //private boolean flyWheelFireActive = false;
     private boolean shooterActive = false;
@@ -209,30 +213,7 @@ public class Robot extends TimedRobot {
     }
 */
 
-    /*
-     * toggle the intakes on or off
-     * 
-     * objects used: neo550ShooterFrontIntake, 
-     *               neo550ShooterRearIntake, 
-     *               neo550ShooterFrontIntakeEncoder
-     */
-    private void intakeToggle(boolean toggleOn)
-    {
-        System.out.println("intakeToggle");
-        double speed = Constants.INTAKE_ON;
-
-        if (toggleOn == false)
-        {
-            speed = Constants.INTAKE_OFF;
-        }
-
-        neo550ShooterFrontIntake.set(speed);
-        neo550ShooterRearIntake.set(speed);
-
-        SmartDashboard.putNumber("FrontIntake Velocity", 
-                                 neo550ShooterFrontIntakeEncoder.getVelocity());
-    }   
-
+   
     /*
      * rotate the turret at the specified speed
      * 
@@ -421,10 +402,10 @@ public class Robot extends TimedRobot {
 
         // tested - working
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE)){
-            intakeToggle(true);
+            intake.toggle(true); 
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE)){
-            intakeToggle(false);
+            intake.toggle(false);
         }
 
 
