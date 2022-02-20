@@ -31,6 +31,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LoaderRollers;
 import frc.robot.subsystems.Turret;
+import frc.robot.utils.TankSpeeds;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -38,31 +39,13 @@ import frc.robot.subsystems.Turret;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
-    class TankSpeeds
-    {
-        double leftSpeed;
-        double rightSpeed;
-        double targets;
-        // calculate tankspeed based on input
-        TankSpeeds(double x, double y)
-        {
-            this.leftSpeed = x;
-            this.rightSpeed = y;
-            this.targets = 0;
-        }
-    }
-
-    public TankSpeeds getTankSpeeds(double x, double y, double z)
-    {
-        return new TankSpeeds(x, y);
-    }
+public class Robot extends TimedRobot 
+{
 
     public TankSpeeds getManualTankSpeed()
     {
-        return getTankSpeeds(-leftJoystick.getY(),
-                             -rightJoystick.getY(),
-                             0);
+        return new TankSpeeds(-leftJoystick.getY(),
+                             -rightJoystick.getY());
     }
 
 
@@ -179,7 +162,8 @@ public class Robot extends TimedRobot {
 
 
     @Override
-    public void teleopInit() {    
+    public void teleopInit() 
+    {    
         limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
     }
 
@@ -245,7 +229,8 @@ public class Robot extends TimedRobot {
             tankSpeed.rightSpeed -= steering_adjust + distance_adjust;
         } else {
             // If we have no targets, don't do anything
-            if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) {
+            if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
+            {
                 System.out.println("visionAlignmentTarget -- no targets -- ");
             }
         }
@@ -267,17 +252,9 @@ public class Robot extends TimedRobot {
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
          */
 
-        // tested - working
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE)){
-            intake.toggle(true); 
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE)){
-            intake.toggle(false);
-        }
-
-
         // !!!SID!!! - Should we change the turret to use the joystick y axis?
-        if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT)){
+        if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT))
+        {
             turret.rotate(-Constants.TURRET_ON);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT))
@@ -285,12 +262,43 @@ public class Robot extends TimedRobot {
             turret.rotate(Constants.TURRET_OFF);
         }
 
-        if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT)){
+        if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT))
+        {
             turret.rotate(Constants.TURRET_ON);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
         {
             turret.rotate(Constants.TURRET_OFF);
+        }
+
+        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) 
+        {
+            // adjust tank speed to handle target if one is seen
+            aimAssist(tankSpeed);
+        } 
+        else
+        {
+            // if we're not aiming the turret then make sure the LEDs are off
+            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
+        }
+
+        // tested - working
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE))
+        {
+            intake.toggle(true); 
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE))
+        {
+            intake.toggle(false);
+        }
+
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_LOADER_ROLLERS))
+        {
+            loaderRollers.toggle(true);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
+        {
+            loaderRollers.toggle(false);
         }
 
         // as long as the trigger is pushed keep firing
@@ -310,17 +318,10 @@ public class Robot extends TimedRobot {
             ballShooter.timed(1.0);
         }
 
-
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_LOADER_ROLLERS)){
-            loaderRollers.toggle(true);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
+        // !!!SID!!! - this will probably need more than this
+        //             for the climber
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER))
         {
-            loaderRollers.toggle(false);
-        }
-
-        // !!!SID!!! - this will probably need more than this...
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER)){
             climber.toggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER))
@@ -334,17 +335,8 @@ public class Robot extends TimedRobot {
         // }
 
 
-        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) {
-            // adjust tank speed to handle target if one is seen
-            aimAssist(tankSpeed);
-        } 
-        else
+        if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
         {
-            // if we're not aiming the turret then make sure the LEDs are off
-            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
-        }
-
-        if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) {
             System.out.println("manual -- leftSpeed: " + 
                                 tankSpeed.leftSpeed + 
                                 " rightSpeed: " + 
@@ -354,6 +346,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("leftSpeed", tankSpeed.leftSpeed);
         SmartDashboard.putNumber("rightSpeed", tankSpeed.rightSpeed);
 
+        // move the robot
         drive.tankDrive(tankSpeed.leftSpeed, tankSpeed.rightSpeed);
     }
 }
