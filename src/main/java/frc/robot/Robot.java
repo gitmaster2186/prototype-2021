@@ -12,8 +12,6 @@
  */
 package frc.robot;
 
-import javax.swing.plaf.TextUI;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -30,6 +28,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Turret;
 
 // import edu.wpi.first.wpilibj.XboxController;
 //import edu.wpi.first.wpilibj.XboxController;
@@ -139,6 +141,8 @@ public class Robot extends TimedRobot {
                                        neo550ShooterRearIntake, 
                                        neo550ShooterFrontIntakeEncoder);
     private Turret turret = new Turret(neo550ShooterTurret);
+    private Climber climber = new Climber(falcon500Climber1,
+                                          falcon500Climber2);
 
     //private Timer flyWheelFireTimer = new Timer();
     //private boolean flyWheelFireActive = false;
@@ -181,25 +185,6 @@ public class Robot extends TimedRobot {
                                  neo550ShooterLoadRollerEncoder.getVelocity());
         SmartDashboard.putNumber("flyWheel 1 velocity", 
                                  falcon500ShooterFlyWheel1.getSelectedSensorVelocity());                         
- }
-
- // turn climbers on or off
- private void ClimberToggle(boolean buttonPressed)
- {
-    double speed = Constants.CLIMBER_SPEED_OFF;
-
-     if (buttonPressed == true)
-     {
-        speed = Constants.CLIMBER_SPEED_ON;
-     }
-     falcon500Climber1.set(speed);
-     falcon500Climber2.set(speed);
-
-      SmartDashboard.putNumber("climber 1 Velocity", 
-                               falcon500Climber1.getSelectedSensorVelocity());
-      SmartDashboard.putNumber("climber 2 Velocity", 
-                               falcon500Climber2.getSelectedSensorVelocity());
-     System.out.println("climbers " + buttonPressed);
  }
 
 
@@ -446,11 +431,11 @@ public class Robot extends TimedRobot {
 
         // !!!SID!!! - this will probably need more than this...
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER)){
-            ClimberToggle(true);
+            climber.toggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER))
         {
-            ClimberToggle(false);
+            climber.toggle(false);
         }
 
 
