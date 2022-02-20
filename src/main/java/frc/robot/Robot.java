@@ -12,6 +12,8 @@
  */
 package frc.robot;
 
+import javax.swing.plaf.TextUI;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -136,6 +138,7 @@ public class Robot extends TimedRobot {
     private Intake intake = new Intake(neo550ShooterFrontIntake, 
                                        neo550ShooterRearIntake, 
                                        neo550ShooterFrontIntakeEncoder);
+    private Turret turret = new Turret(neo550ShooterTurret);
 
     //private Timer flyWheelFireTimer = new Timer();
     //private boolean flyWheelFireActive = false;
@@ -214,17 +217,6 @@ public class Robot extends TimedRobot {
 */
 
    
-    /*
-     * rotate the turret at the specified speed
-     * 
-     * objects used: neo550ShooterTurret
-     */
-    private void turretRotate(double speed)
-    {
-        System.out.println("turretRotate");
-        neo550ShooterTurret.set(speed);
-    }
-
     // !!!SID!!! - this ain't right!!!
 
     /*
@@ -411,19 +403,19 @@ public class Robot extends TimedRobot {
 
         // !!!SID!!! - Should we change the turret to use the joystick y axis?
         if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT)){
-            turretRotate(-Constants.TURRET_ON);
+            turret.rotate(-Constants.TURRET_ON);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT))
         {
-            turretRotate(Constants.TURRET_OFF);
+            turret.rotate(Constants.TURRET_OFF);
         }
 
         if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT)){
-            turretRotate(Constants.TURRET_ON);
+            turret.rotate(Constants.TURRET_ON);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
         {
-            turretRotate(Constants.TURRET_OFF);
+            turret.rotate(Constants.TURRET_OFF);
         }
 
         // as long as the trigger is pushed keep firing
