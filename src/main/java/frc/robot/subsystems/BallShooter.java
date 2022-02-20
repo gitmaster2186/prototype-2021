@@ -10,6 +10,7 @@ public class BallShooter {
 
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
+    
     private double startTime = 0;
     private boolean shooterActive = false;
     private int startballShootTimedCounter = 0;

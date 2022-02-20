@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LoaderRollers;
 import frc.robot.subsystems.Turret;
 
 /**
@@ -135,8 +136,12 @@ public class Robot extends TimedRobot {
                                           falcon500Climber2);
     private BallShooter ballShooter = new BallShooter(falcon500ShooterFlyWheel1, 
                                                       falcon500ShooterFlyWheel2);
-    //private Timer flyWheelFireTimer = new Timer();
-    //private boolean flyWheelFireActive = false;
+
+     private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
+                                                              falcon500ShooterFlyWheel2,
+                                                              neo550ShooterLoadRoller,
+                                                              neo550ShooterLoadRollerEncoder);
+                             
 
     @Override
     public void robotInit()
@@ -186,40 +191,6 @@ public class Robot extends TimedRobot {
     }
 */
 
-    /*
-     * toggle the loader rollers on/off
-     * run while button is pushed to load ball into firing position
-     * do not load ball if flywheels are not up to speed 
-     * 
-     * objects used: falcon500ShooterFlyWheel1, 
-     *               falcon500ShooterFlyWheel2,
-     *               neo550ShooterLoadRoller
-     * 
-     */
-    private void LoaderRollersToggle(boolean buttonPressed)
-    {
-        double speed = Constants.LOADER_SPEED_ON;
-        if (buttonPressed == false)  
-        {
-             speed = Constants.LOADER_SPEED_OFF;
-        }    
-        // get the motor velocity of the flywheels
-        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel1);
-        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel2);
-
-        // don't allow the loader to load the ball until 
-        // the flywheels are up to speed?
-        if ((flyVel1 >= Constants.MIN_FLYWHEEL_VEL) &&
-            (flyVel2 >= Constants.MIN_FLYWHEEL_VEL))
-        {
-            neo550ShooterLoadRoller.set(speed);
-        }
-
-        SmartDashboard.putNumber("LoadRoller Velocity", 
-                                 neo550ShooterLoadRollerEncoder.getVelocity());
-    }
 
 
     // not sure what this is
@@ -341,11 +312,11 @@ public class Robot extends TimedRobot {
 
 
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_LOADER_ROLLERS)){
-            LoaderRollersToggle(true);
+            loaderRollers.toggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
         {
-            LoaderRollersToggle(false);
+            loaderRollers.toggle(false);
         }
 
         // !!!SID!!! - this will probably need more than this...
