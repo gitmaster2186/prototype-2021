@@ -137,8 +137,8 @@ public class Robot extends TimedRobot {
     //private boolean flyWheelFireActive = false;
     private boolean shooterActive = false;
     private double startTime = 0;
-    private int startFireTurretTimedCounter = 0;
-    private int stopFireTurretTimedCounter = 0;
+    private int startballShootTimedCounter = 0;
+    private int stopballShootTimedCounter = 0;
     private int startFireBallCounter = 0;
     private int stopFireBallCounter = 0;
 
@@ -209,12 +209,19 @@ public class Robot extends TimedRobot {
     }
 */
 
-    private void toggleIntake(boolean buttonPressed)
+    /*
+     * toggle the intakes on or off
+     * 
+     * objects used: neo550ShooterFrontIntake, 
+     *               neo550ShooterRearIntake, 
+     *               neo550ShooterFrontIntakeEncoder
+     */
+    private void intakeToggle(boolean toggleOn)
     {
-        System.out.println("toggleIntake");
+        System.out.println("intakeToggle");
         double speed = Constants.INTAKE_ON;
 
-        if (buttonPressed == false)
+        if (toggleOn == false)
         {
             speed = Constants.INTAKE_OFF;
         }
@@ -226,6 +233,11 @@ public class Robot extends TimedRobot {
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
     }   
 
+    /*
+     * rotate the turret at the specified speed
+     * 
+     * objects used: neo550ShooterTurret
+     */
     private void turretRotate(double speed)
     {
         System.out.println("turretRotate");
@@ -234,16 +246,20 @@ public class Robot extends TimedRobot {
 
     // !!!SID!!! - this ain't right!!!
 
-    // a timer based shooter 
-    private void fireTurretTimed(double fireTurrentTimeSeconds)
+    /*
+     * a timer based shooter
+     * 
+     * objects used: 
+     */
+    private void ballShootTimed(double fireTurrentTimeSeconds)
     {
         // are we starting a new shot?
         if (shooterActive == false)
         {
             startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
             ballShootToggle(true);
-            startFireTurretTimedCounter += 1;
-            SmartDashboard.putNumber("startFireTurretTimedCounter", startFireTurretTimedCounter);
+            startballShootTimedCounter += 1;
+            SmartDashboard.putNumber("startballShootTimedCounter", startballShootTimedCounter);
         }
         else
         {
@@ -254,12 +270,17 @@ public class Robot extends TimedRobot {
             {
                 ballShootToggle(false);
 
-                stopFireTurretTimedCounter += 1;
-                SmartDashboard.putNumber("stopFireTurretTimedCounter", stopFireTurretTimedCounter);
+                stopballShootTimedCounter += 1;
+                SmartDashboard.putNumber("stopballShootTimedCounter", stopballShootTimedCounter);
             }
         }
     }
 
+    /*
+     * toggle the ball shooter on/off
+     * 
+     * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
+     */
     private void ballShootToggle(boolean buttonPressed)
     {
         double speed;
@@ -285,13 +306,19 @@ public class Robot extends TimedRobot {
         falcon500ShooterFlyWheel2.set(speed);
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
-
     }
     
 
-    // run while button is pushed to load ball into firing position
-    // do not load ball if flywheels are not up to speed 
-    // !!!SID!!! TBD - don't fire until flywheels are up to speed
+    /*
+     * toggle the loader rollers on/off
+     * run while button is pushed to load ball into firing position
+     * do not load ball if flywheels are not up to speed 
+     * 
+     * objects used: falcon500ShooterFlyWheel1, 
+     *               falcon500ShooterFlyWheel2,
+     *               neo550ShooterLoadRoller
+     * 
+     */
     private void LoaderRollersToggle(boolean buttonPressed)
     {
         double speed = Constants.LOADER_SPEED_ON;
@@ -394,10 +421,10 @@ public class Robot extends TimedRobot {
 
         // tested - working
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE)){
-            toggleIntake(true);
+            intakeToggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE)){
-            toggleIntake(false);
+            intakeToggle(false);
         }
 
 
@@ -432,7 +459,7 @@ public class Robot extends TimedRobot {
         // at the time that this method is being called
         if(altJoystick.getRawButton(Constants.FIRE_TURRET_TIMED))
         {
-            fireTurretTimed(1.0);
+            ballShootTimed(1.0);
         }
 
 
