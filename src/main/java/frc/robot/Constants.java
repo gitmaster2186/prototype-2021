@@ -1,11 +1,10 @@
 package frc.robot;
 
 public class Constants {
-    public static final int LEFT_JOYSTICK = 0;
-    public static final int RIGHT_JOYSTICK = 1;
-     public static final int ALT_JOYSTICK = 2;
+    public static final int LEFT_JOYSTICK_USB_PORT = 0;
+    public static final int RIGHT_JOYSTICK_USB_PORT = 1;
+    public static final int ALT_JOYSTICK_USB_PORT = 2;
 
-    public static final int DRIVER_XBOX_CONTROLLER = 0;
     public static final double VISION_MIN_AREA = 0.5;
     public static final double VISION_MIN_ALIGN_SPEED = 0.1;
 
@@ -17,22 +16,38 @@ public class Constants {
     public static final String LIMELIGHT_TARGET_AREA =  "ta";
     public static final String LIMELIGHT_LEDMODE = "ledMode";
 
-    // extreme 3dpro joystick button mapping
-    public static int FIRE_TURRET = 1; // trigger
-    public static int TOGGLE_TURRET_AIM_ASSIST = 2; //thumb button
+    /*
+     * commands:
+     *   1.  fire turret
+     *   2.  aim assist
+     *   3.  turn turret left
+     *   4.  turn turret right
+     *   5.  toggle intake
+     *   6.  toggle loader
+     *   7.  deploy intake
+     *   8.  fire turret timed
+     *   9.  toggle climber
+     *  11.  debug
+     */
 
-    public static int TURN_TURRET_LEFT = 3; // below and left of central switch
-    public static int TURN_TURRET_RIGHT = 4; // below and right of central switch
+    // alt joystick -- extreme 3dpro joystick button mapping
+    public static int FIRE_TURRET = 1;          // trigger
+    public static int AIM_ASSIST_BUTTON = 2;    // thumb button
 
-    public static int TOGGLE_INTAKE = 5; // left of central switch
-    public static int TOGGLE_INTERNAL_ROLLER = 6; // right of central switch
+    // !!!SID!!! - Should we change the turret to use the joystick y axis?
+    public static int TURN_TURRET_LEFT = 3;     // below and left of central switch
+    public static int TURN_TURRET_RIGHT = 4;    // below and right of central switch
 
-    public static int DEPLOY_INTAKE = 7; // top left outside on base
-    public static int FIRE_TURRET_TIMED = 8; // top left inside on base
+    public static int TOGGLE_INTAKE = 5;        // left of central switch
+    public static int TOGGLE_LOADER_ROLLERS = 6; // right of central switch
 
-    public static int DEBUG_BUTTON = 11; // bottom left outside on base
+    public static int DEPLOY_INTAKE = 7;        // top left outside on base
+    public static int FIRE_TURRET_TIMED = 8;    // top left inside on base
 
-    public static final int TOGGLE_CLIMBER = 9;
+    public static final int TOGGLE_CLIMBER = 9; // 
+
+    public static int DEBUG_BUTTON = 11;        // bottom left outside on base
+
 
     public static final int SPARK_NEO550_INTAKE_1_CAN_ID = 6;
     public static final int SPARK_NEO550_INTAKE_2_CAN_ID = 1;
@@ -62,9 +77,10 @@ public class Constants {
     public static final double LOADER_SPEED_OFF = 0;
 
     public static final double TURRET_ON = 0.1;
-    public static final double TURRET_LEFT_OFF = 0.0;
+    public static final double TURRET_OFF = 0.0;
     public static final double CLIMBER_SPEED_ON = 0.25;
     public static final double CLIMBER_SPEED_OFF = 0;
+    public static final double MIN_FLYWHEEL_VEL = 0;
     
 
 }

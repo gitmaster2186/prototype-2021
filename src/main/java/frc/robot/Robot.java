@@ -104,9 +104,9 @@ public class Robot extends TimedRobot {
     
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-    Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK);
-    Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK);
-    Joystick altJoystick = new Joystick(Constants.ALT_JOYSTICK);
+    Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_USB_PORT);
+    Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_USB_PORT);
+    Joystick altJoystick = new Joystick(Constants.ALT_JOYSTICK_USB_PORT);
     
     // XboxController xboxController = new XboxController(Constants.DRIVER_XBOX_CONTROLLER);
 
@@ -139,8 +139,8 @@ public class Robot extends TimedRobot {
     private double startTime = 0;
     private int startFireTurretTimedCounter = 0;
     private int stopFireTurretTimedCounter = 0;
-    private int startFireTurretCounter = 0;
-    private int stopFireTurretCounter = 0;
+    private int startFireBallCounter = 0;
+    private int stopFireBallCounter = 0;
 
     @Override
     public void robotInit()
@@ -177,31 +177,22 @@ public class Robot extends TimedRobot {
  }
 
  // turn climbers on or off
- private void Climber(boolean buttonPressed)
+ private void ClimberToggle(boolean buttonPressed)
  {
+    double speed = Constants.CLIMBER_SPEED_OFF;
 
-     // get the motor speed of the flywheels
-     double vel1 = falcon500Climber1.getSelectedSensorVelocity();
-     SmartDashboard.putNumber("climber 2 velocity", vel1);
-     double vel2 = falcon500Climber2.getSelectedSensorVelocity();
-     SmartDashboard.putNumber("climber 2 velocity", vel2);
-
-     if (buttonPressed == true){
-        falcon500Climber1.set(Constants.CLIMBER_SPEED_ON);
-        falcon500Climber2.set(Constants.CLIMBER_SPEED_ON);
-
-
-         // shooterActive = true;
-         System.out.println("climbers True");
+     if (buttonPressed == true)
+     {
+        speed = Constants.CLIMBER_SPEED_ON;
      }
-     else {
-         falcon500Climber1.set(Constants.CLIMBER_SPEED_OFF);
-         falcon500Climber2.set(Constants.CLIMBER_SPEED_OFF);
+     falcon500Climber1.set(speed);
+     falcon500Climber2.set(speed);
 
-         SmartDashboard.putNumber("climber Velocity", 
-                                  falcon500Climber1.getSelectedSensorVelocity());
-         System.out.println("InternalRollers False");
-     }
+      SmartDashboard.putNumber("climber 1 Velocity", 
+                               falcon500Climber1.getSelectedSensorVelocity());
+      SmartDashboard.putNumber("climber 2 Velocity", 
+                               falcon500Climber2.getSelectedSensorVelocity());
+     System.out.println("climbers " + buttonPressed);
  }
 
 
@@ -218,32 +209,27 @@ public class Robot extends TimedRobot {
     }
 */
 
-    private void startIntake()
+    private void toggleIntake(boolean buttonPressed)
     {
-        System.out.println("startIntake");
-        neo550ShooterFrontIntake.set(Constants.INTAKE_ON);
-        neo550ShooterRearIntake.set(Constants.INTAKE_ON);
+        System.out.println("toggleIntake");
+        double speed = Constants.INTAKE_ON;
+
+        if (buttonPressed == false)
+        {
+            speed = Constants.INTAKE_OFF;
+        }
+
+        neo550ShooterFrontIntake.set(speed);
+        neo550ShooterRearIntake.set(speed);
+
         SmartDashboard.putNumber("FrontIntake Velocity", 
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
     }   
 
-    private void stopIntake()
+    private void turretRotate(double speed)
     {
-      System.out.println("stopIntake");
-      neo550ShooterFrontIntake.set(Constants.INTAKE_OFF);
-      neo550ShooterRearIntake.set(Constants.INTAKE_OFF);
-      SmartDashboard.putNumber("FrontIntake Velocity", 
-                               neo550ShooterFrontIntakeEncoder.getVelocity());
-}
-
-    private void RotateTurret(double speed)
-    {
-        System.out.println("RotateTurret");
+        System.out.println("turretRotate");
         neo550ShooterTurret.set(speed);
-        /*
-            SmartDashboard.putNumber("FrontIntake Velocity", 
-                                 neo550ShooterFrontIntakeEncoder.getVelocity());
-        */
     }
 
     // !!!SID!!! - this ain't right!!!
@@ -255,7 +241,7 @@ public class Robot extends TimedRobot {
         if (shooterActive == false)
         {
             startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
-            startFireTurret();
+            ballShootToggle(true);
             startFireTurretTimedCounter += 1;
             SmartDashboard.putNumber("startFireTurretTimedCounter", startFireTurretTimedCounter);
         }
@@ -266,88 +252,77 @@ public class Robot extends TimedRobot {
             // are we done (timer expired)?
             if ((nowTime - startTime) >= fireTurrentTimeSeconds)
             {
-                stopFireTurret();
+                ballShootToggle(false);
+
                 stopFireTurretTimedCounter += 1;
                 SmartDashboard.putNumber("stopFireTurretTimedCounter", stopFireTurretTimedCounter);
             }
         }
-
     }
 
-    // !!!SID!!! TBD - don't fire until flywheels are up to speed
-    private void startFireTurret()
+    private void ballShootToggle(boolean buttonPressed)
     {
-        falcon500ShooterFlyWheel1.set(Constants.FLYWHEEL_ON);
+        double speed;
+        if (buttonPressed == false)
+        {
+            speed = Constants.FLYWHEEL_OFF;
+            shooterActive = false;
+            stopFireBallCounter += 1;
+            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
+        }
+        else
+        {
+            speed = Constants.FLYWHEEL_ON;
+            shooterActive = true;
+            startFireBallCounter += 1;
+            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
+        }
+
+        falcon500ShooterFlyWheel1.set(speed);
         double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        // falcon500ShooterFlyWheel1.getSelectedSensorPosition();
         SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
 
-        falcon500ShooterFlyWheel2.set(Constants.FLYWHEEL_ON);
+        falcon500ShooterFlyWheel2.set(speed);
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
 
-        shooterActive = true;
-        startFireTurretCounter += 1;
-        SmartDashboard.putNumber("startFireTurretCounter", startFireTurretCounter);
     }
     
-    private void stopFireTurret()
-    {
-        if (shooterActive == true)
-        {
-            //System.out.println("@@@@@@@@stopFireTurret");
-            falcon500ShooterFlyWheel1.set(Constants.FLYWHEEL_OFF);
-            double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-            SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
-
-            falcon500ShooterFlyWheel2.set(Constants.FLYWHEEL_OFF);
-            double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-            SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
-
-            shooterActive = false;
-            stopFireTurretCounter += 1;
-            SmartDashboard.putNumber("stopFireTurretCounter", stopFireTurretCounter);
-        }
-    }
-
-    private void Deployintake()
-    {
-        System.out.println("DeployIntake");
-    }
 
     // run while button is pushed to load ball into firing position
     // do not load ball if flywheels are not up to speed 
-    private void InternalRollers(boolean buttonPressed)
+    // !!!SID!!! TBD - don't fire until flywheels are up to speed
+    private void LoaderRollersToggle(boolean buttonPressed)
     {
-        
-        // get the motor speed of the flywheels
-        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", vel1);
-        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
+        double speed = Constants.LOADER_SPEED_ON;
+        if (buttonPressed == false)  
+        {
+             speed = Constants.LOADER_SPEED_OFF;
+        }    
+        // get the motor velocity of the flywheels
+        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel1);
+        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel2);
 
-        // !!!SID!!! FIX ME!!! don't allow the loader to load the ball until 
+        // don't allow the loader to load the ball until 
         // the flywheels are up to speed?
-        if (buttonPressed == true){
-            neo550ShooterLoadRoller.set(Constants.LOADER_SPEED_ON);
-            SmartDashboard.putNumber("LoadRoller Velocity", 
-                                    neo550ShooterLoadRollerEncoder.getVelocity());
-
-
-            // shooterActive = true;
-            System.out.println("InternalRollers True");
-        }
-        else {
-            // shooterActive = false;
-            //  !!!SID!!! FIX ME!!!! make stop faster
-            neo550ShooterLoadRoller.set(Constants.LOADER_SPEED_OFF);
-            SmartDashboard.putNumber("LoadRoller Velocity", 
-                                    neo550ShooterLoadRollerEncoder.getVelocity());
-            System.out.println("InternalRollers False");
+        if ((flyVel1 >= Constants.MIN_FLYWHEEL_VEL) &&
+            (flyVel2 >= Constants.MIN_FLYWHEEL_VEL))
+        {
+            neo550ShooterLoadRoller.set(speed);
         }
 
-
+        SmartDashboard.putNumber("LoadRoller Velocity", 
+                                 neo550ShooterLoadRollerEncoder.getVelocity());
     }
+
+
+    // not sure what this is
+    // private void Deployintake()
+    // {
+    //     System.out.println("DeployIntake");
+    // }
 
     // Vision-alignment mode
     void aimAssist(TankSpeeds tankSpeed)
@@ -419,36 +394,38 @@ public class Robot extends TimedRobot {
 
         // tested - working
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE)){
-            startIntake();
+            toggleIntake(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE)){
-            stopIntake();
+            toggleIntake(false);
         }
 
-        if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT)) {
-            RotateTurret(Constants.TURRET_ON);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
-        {
-            RotateTurret(Constants.TURRET_LEFT_OFF);
-        }
 
+        // !!!SID!!! - Should we change the turret to use the joystick y axis?
         if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT)){
-            RotateTurret(-Constants.TURRET_ON);
+            turretRotate(-Constants.TURRET_ON);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT))
         {
-            RotateTurret(Constants.TURRET_LEFT_OFF);
+            turretRotate(Constants.TURRET_OFF);
+        }
+
+        if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT)){
+            turretRotate(Constants.TURRET_ON);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
+        {
+            turretRotate(Constants.TURRET_OFF);
         }
 
         // as long as the trigger is pushed keep firing
         if(altJoystick.getRawButton(Constants.FIRE_TURRET))
         {
-            startFireTurret();
+            ballShootToggle(true);
         }
         else
         {
-            stopFireTurret();
+            ballShootToggle(false);
         }
 
         // returns true if the button is being held down
@@ -458,27 +435,32 @@ public class Robot extends TimedRobot {
             fireTurretTimed(1.0);
         }
 
-        if(altJoystick.getRawButton(Constants.DEPLOY_INTAKE)){
-            Deployintake();
-        }
 
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTERNAL_ROLLER)){
-            InternalRollers(true);
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_LOADER_ROLLERS)){
+            LoaderRollersToggle(true);
         }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTERNAL_ROLLER))
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
         {
-            InternalRollers(false);
+            LoaderRollersToggle(false);
         }
 
+        // !!!SID!!! - this will probably need more than this...
         if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER)){
-            Climber(true);
+            ClimberToggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER))
         {
-            Climber(false);
+            ClimberToggle(false);
         }
 
-        if (altJoystick.getRawButton(Constants.TOGGLE_TURRET_AIM_ASSIST)) {
+
+        // if(altJoystick.getRawButton(Constants.DEPLOY_INTAKE)){
+        //     Deployintake();
+        // }
+
+
+        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) {
+            // adjust tank speed to handle target if one is seen
             aimAssist(tankSpeed);
         } 
         else
@@ -493,10 +475,9 @@ public class Robot extends TimedRobot {
                                 " rightSpeed: " + 
                                 tankSpeed.rightSpeed);
         }
-
+        SmartDashboard.putNumber("targets", tankSpeed.targets);
         SmartDashboard.putNumber("leftSpeed", tankSpeed.leftSpeed);
         SmartDashboard.putNumber("rightSpeed", tankSpeed.rightSpeed);
-        SmartDashboard.putNumber("targets", tankSpeed.targets);
 
         drive.tankDrive(tankSpeed.leftSpeed, tankSpeed.rightSpeed);
     }
