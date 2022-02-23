@@ -11,8 +11,6 @@ public class BallShooter {
 
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
-    private SlewRateLimiter leftFlyfilter;
-    private SlewRateLimiter rightFlyfilter;
     
     private double startTime = 0;
     private boolean shooterActive = false;
@@ -20,17 +18,18 @@ public class BallShooter {
     private int stopballShootTimedCounter = 0;
     private int startFireBallCounter = 0;
     private int stopFireBallCounter = 0;
-
+    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(0.75);
+    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(0.75);
+                                      
     public BallShooter(WPI_TalonFX inFalcon500ShooterFlyWheel1,
-                       WPI_TalonFX inFalcon500ShooterFlyWheel2,
-                       SlewRateLimiter inLeftFlyfilter,
-                       SlewRateLimiter inRightFlyfilter)
+                       WPI_TalonFX inFalcon500ShooterFlyWheel2)
                    
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
-        leftFlyfilter = inLeftFlyfilter;
-        rightFlyfilter = inRightFlyfilter;
+
+        falcon500ShooterFlyWheel1.configFactoryDefault();
+        falcon500ShooterFlyWheel2.configFactoryDefault();
     }
 
 
@@ -96,7 +95,6 @@ public class BallShooter {
 
         double xr = rightFlyfilter.calculate(speed);
         falcon500ShooterFlyWheel2.set(xr);
-
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
     }

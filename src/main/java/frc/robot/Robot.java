@@ -18,12 +18,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
@@ -53,38 +49,10 @@ public class Robot extends TimedRobot
     }
 
 
-    // Constants such as camera and target height stored. Change per robot and goal!
-    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
-    // Angle between horizontal and the camera.
-    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
-
-    // How far from the target we want to be
-    final double GOAL_RANGE_METERS = Units.feetToMeters(3);
-
-    // PID constants should be tuned per robot
-    final double LINEAR_P = 0.1;
-    final double LINEAR_D = 0.0;
-    PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
-
-    final double ANGULAR_P = 0.1;
-    final double ANGULAR_D = 0.0;
-
-
-    final double INCREMENT = 0.25;
-    final double LOW_IN_LIMIT = -1.0;
-    final double HIGH_IN_LIMIT = 1.0;
-    
-    final double LOW_OUT_LIMIT_1 = 0.0;
-    final double HIGH_OUT_LIMIT_1 = 360.0;
-    
-    final double LOW_OUT_LIMIT_2 = -180.0;
-    final double HIGH_OUT_LIMIT_2 = 180.0;
       
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable limeLightTable = inst.getTable("limelight");
     
-    PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
     Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_USB_PORT);
     Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_USB_PORT);
@@ -107,11 +75,6 @@ public class Robot extends TimedRobot
     private CANSparkMax neo550ShooterLoadRoller   = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_1_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
-    private RelativeEncoder neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
-    //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
-    private RelativeEncoder neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller.getEncoder();   
-    //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
-   
     private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_1_CAN_ID);
     private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_2_CAN_ID);
   
@@ -119,51 +82,23 @@ public class Robot extends TimedRobot
     private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_2_CAN_ID);
   
     private Intake intake = new Intake(neo550ShooterFrontIntake, 
-                                       neo550ShooterRearIntake, 
-                                       neo550ShooterFrontIntakeEncoder);
+                                       neo550ShooterRearIntake); 
     private Turret turret = new Turret(neo550ShooterTurret);
     private Climber climber = new Climber(falcon500Climber1,
                                           falcon500Climber2);
 
-    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(0.25);
-    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(0.25);
-                                      
 
     private BallShooter ballShooter = new BallShooter(falcon500ShooterFlyWheel1, 
-                                                      falcon500ShooterFlyWheel2,
-                                                      leftFlyfilter,
-                                                      rightFlyfilter);
+                                                      falcon500ShooterFlyWheel2);
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
-                                                              neo550ShooterLoadRoller,
-                                                              neo550ShooterLoadRollerEncoder);
+                                                              neo550ShooterLoadRoller);
 
   
     @Override
     public void robotInit()
-    {
-        /* set the motors to factory default values */
-
-        neo550ShooterFrontIntake.restoreFactoryDefaults();
-        neo550ShooterRearIntake.restoreFactoryDefaults();
-        neo550ShooterLoadRoller.restoreFactoryDefaults();
-        neo550ShooterTurret.restoreFactoryDefaults();
-
-        falcon500ShooterFlyWheel1.configFactoryDefault();
-        falcon500ShooterFlyWheel2.configFactoryDefault();
-        falcon500Climber1.configFactoryDefault();
-        falcon500Climber2.configFactoryDefault();
-
-
-        // put some motor velocity numbers on dashboard
-        SmartDashboard.putNumber("FrontIntake Velocity", 
-                                 neo550ShooterFrontIntakeEncoder.getVelocity());
-        SmartDashboard.putNumber("LoadRoller Velocity", 
-                                 neo550ShooterLoadRollerEncoder.getVelocity());
-        SmartDashboard.putNumber("flyWheel 1 velocity", 
-                                 falcon500ShooterFlyWheel1.getSelectedSensorVelocity());                         
- }
+    {}
 
 
     @Override

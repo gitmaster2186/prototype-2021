@@ -13,6 +13,9 @@ public class Climber {
     {
         falcon500Climber1 = inFalcon500Climber1;
         falcon500Climber2 = inFalcon500Climber2;
+
+        falcon500Climber1.configFactoryDefault();
+        falcon500Climber2.configFactoryDefault();
     }
      
     /*

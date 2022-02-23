@@ -9,15 +9,16 @@ import frc.robot.Constants;
 public class Intake {
     private CANSparkMax neo550ShooterFrontIntake;
     private CANSparkMax neo550ShooterRearIntake;
-    private RelativeEncoder neo550ShooterFrontIntakeEncoder;
+    private RelativeEncoder neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
 
     public Intake(CANSparkMax inNeo550ShooterFrontIntake,
-                  CANSparkMax inNeo550ShooterRearIntake,
-                  RelativeEncoder inNeo550ShooterFrontIntakeEncoder)
+                  CANSparkMax inNeo550ShooterRearIntake)
     {
         neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
         neo550ShooterRearIntake  = inNeo550ShooterRearIntake;
-        neo550ShooterFrontIntakeEncoder = inNeo550ShooterFrontIntakeEncoder;
+
+        neo550ShooterFrontIntake.restoreFactoryDefaults();
+        neo550ShooterRearIntake.restoreFactoryDefaults();
     }
 
     /*
@@ -40,6 +41,8 @@ public class Intake {
         neo550ShooterFrontIntake.set(speed);
         neo550ShooterRearIntake.set(speed);
 
+        SmartDashboard.putNumber("FrontIntake speed", 
+                                 speed);
         SmartDashboard.putNumber("FrontIntake Velocity", 
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
     }   

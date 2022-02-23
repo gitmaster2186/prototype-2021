@@ -12,7 +12,8 @@ public class LoaderRollers {
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
     private CANSparkMax neo550ShooterLoadRoller;
-    private RelativeEncoder neo550ShooterLoadRollerEncoder;   
+    private RelativeEncoder neo550ShooterLoadRollerEncoder;
+
     // private boolean leftLimitSwitchTrippedValue = false;
     // private boolean rightLimitSwitchTrippedValue = false;
     // private DigitalInput leftLimitSwitch = new DigitalInput(Constants.DIOleftLimitSwitch);
@@ -20,13 +21,15 @@ public class LoaderRollers {
   
     public LoaderRollers(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                          WPI_TalonFX inFalcon500ShooterFlyWheel2,
-                         CANSparkMax inNeo550ShooterLoadRoller,
-                         RelativeEncoder inNeo550ShooterLoadRollerEncoder)
+                         CANSparkMax inNeo550ShooterLoadRoller)
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
         neo550ShooterLoadRoller = inNeo550ShooterLoadRoller;
-        neo550ShooterLoadRollerEncoder = inNeo550ShooterLoadRollerEncoder;
+        
+        neo550ShooterLoadRoller.restoreFactoryDefaults();
+
+        neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller.getEncoder();   
     }
     /*
      * toggle the loader rollers on/off

@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,6 +20,11 @@ public class DriveTrain {
     private CANSparkMax neoDriveTrainRearLeft;
     private CANSparkMax neoDriveTrainRearRight;
     private DifferentialDrive drive;
+    private RelativeEncoder neo550ShooterDtFrontLeftEncoder;
+    private RelativeEncoder neo550ShooterDtFrontRightEncoder;
+    //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
+    //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
+   
 
     // speed rate limiters for drive train
     // !!!SID!!! XXX - is this needed??                             
@@ -42,6 +50,8 @@ public class DriveTrain {
                               
         neoDriveTrainRearLeft.follow(neoDriveTrainFrontLeft);
         neoDriveTrainRearRight.follow(neoDriveTrainFrontRight);
+        neo550ShooterDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
+        neo550ShooterDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
 
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
                                       neoDriveTrainFrontRight);                              
@@ -50,6 +60,35 @@ public class DriveTrain {
 
     }
 
+        // Constants such as camera and target height stored. Change per robot and goal!
+        final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+        final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+        // Angle between horizontal and the camera.
+        final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+    
+        // How far from the target we want to be
+        final double GOAL_RANGE_METERS = Units.feetToMeters(3);
+    
+        // PID constants should be tuned per robot
+        final double LINEAR_P = 0.1;
+        final double LINEAR_D = 0.0;
+        PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
+    
+        final double ANGULAR_P = 0.1;
+        final double ANGULAR_D = 0.0;
+    
+    
+        final double INCREMENT = 0.25;
+        final double LOW_IN_LIMIT = -1.0;
+        final double HIGH_IN_LIMIT = 1.0;
+        
+        final double LOW_OUT_LIMIT_1 = 0.0;
+        final double HIGH_OUT_LIMIT_1 = 360.0;
+        
+        final double LOW_OUT_LIMIT_2 = -180.0;
+        final double HIGH_OUT_LIMIT_2 = 180.0;
+        PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+    
     // Vision-alignment mode
     private void aimAssist(TankSpeeds tankSpeed)
     {
@@ -128,6 +167,11 @@ public class DriveTrain {
 
         SmartDashboard.putNumber("xl", xl);
         SmartDashboard.putNumber("xr", xr);
+
+        SmartDashboard.putNumber("leftPos", 
+                                 neo550ShooterDtFrontLeftEncoder.getPosition());
+        SmartDashboard.putNumber("rightPos", 
+                                neo550ShooterDtFrontRightEncoder.getPosition());
 
         drive.tankDrive(xl, xr);
     }

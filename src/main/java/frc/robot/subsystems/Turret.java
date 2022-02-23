@@ -12,6 +12,8 @@ public class Turret {
     public Turret(CANSparkMax inNeo550ShooterTurret)
     {
         neo550ShooterTurret = inNeo550ShooterTurret;
+
+        neo550ShooterTurret.restoreFactoryDefaults();
     }
 
     public void rotate(double speed)
