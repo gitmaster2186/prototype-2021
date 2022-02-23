@@ -1,13 +1,17 @@
 /*
  * TBD:
- *    - change drivetrain motors to NEOs
- *    - verify the vision alignment code
- *    - vision alighnment mode 
- *      - just advise driver with dashboard info
- *      - implement angle alignment mode
- *      - add distance adjustment mode
- *    - put actual code in stub routines
- *    - get agreement on button assignments
+ *    - use limit switch to determine when ball is in position to load
+ *    - cameras?
+ *      - vision camera(s)
+ *      - do we need a driver camera?
+ *    - vision alignment mode phases
+ *      1. just advise driver with dashboard info
+ *      2. implement angle alignment mode
+ *      3. add distance adjustment mode
+ *    - don't allow shooting until flywheel is up to speed
+ *    - The robot cannot move when we are shooting.
+ *      suppress drive when the targeting sequence is activated.
+ *    - use color sensors at the input to reject wrong balls.
  *
  */
 package frc.robot;
@@ -18,6 +22,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -125,6 +130,9 @@ public class Robot extends TimedRobot
                                                               neo550ShooterLoadRoller,
                                                               neo550ShooterLoadRollerEncoder);
                              
+    private SlewRateLimiter leftDtfilter = new SlewRateLimiter(0.25);
+    private SlewRateLimiter rightDtfilter = new SlewRateLimiter(0.25);
+
 
     @Override
     public void robotInit()
@@ -315,6 +323,7 @@ public class Robot extends TimedRobot
         // at the time that this method is being called
         if(altJoystick.getRawButton(Constants.FIRE_TURRET_TIMED))
         {
+            // activate the shooter for 1 second
             ballShooter.timed(1.0);
         }
 
@@ -347,6 +356,11 @@ public class Robot extends TimedRobot
         SmartDashboard.putNumber("rightSpeed", tankSpeed.rightSpeed);
 
         // move the robot
-        drive.tankDrive(tankSpeed.leftSpeed, tankSpeed.rightSpeed);
+        double xl = leftDtfilter.calculate(tankSpeed.leftSpeed);
+        double xr = rightDtfilter.calculate(tankSpeed.rightSpeed);
+        SmartDashboard.putNumber("xl", xl);
+        SmartDashboard.putNumber("xr", xr);
+        drive.tankDrive(xl, xr);
+//        drive.tankDrive(tankSpeed.leftSpeed, tankSpeed.rightSpeed);
     }
 }
