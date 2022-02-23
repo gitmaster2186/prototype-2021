@@ -23,12 +23,15 @@ public class LoaderRollers {
                          WPI_TalonFX inFalcon500ShooterFlyWheel2,
                          CANSparkMax inNeo550ShooterLoadRoller)
     {
+        // we need the fly wheels because we need to check it is up to speed
+        // before turning on the load roller.
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
         neo550ShooterLoadRoller = inNeo550ShooterLoadRoller;
-        
+
         neo550ShooterLoadRoller.restoreFactoryDefaults();
 
+        // neo550 motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev.
         neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller.getEncoder();   
     }
     /*
@@ -62,7 +65,11 @@ public class LoaderRollers {
         {
             neo550ShooterLoadRoller.set(speed);
         }
-
+        
+        // if we want RPS instead of RPM?
+        // neo550ShooterLoadRollerEncoder.setVelocityConversionFactor(60);
+        
+        // put up the rpm number
         SmartDashboard.putNumber("LoadRoller Velocity", 
                                  neo550ShooterLoadRollerEncoder.getVelocity());
     }

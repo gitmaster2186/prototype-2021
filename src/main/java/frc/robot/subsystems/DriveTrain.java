@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,8 +21,8 @@ public class DriveTrain {
     private CANSparkMax neoDriveTrainRearLeft;
     private CANSparkMax neoDriveTrainRearRight;
     private DifferentialDrive drive;
-    private RelativeEncoder neo550ShooterDtFrontLeftEncoder;
-    private RelativeEncoder neo550ShooterDtFrontRightEncoder;
+    private RelativeEncoder neoDtFrontLeftEncoder;
+    private RelativeEncoder neoDtFrontRightEncoder;
     //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
     //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
    
@@ -48,10 +49,23 @@ public class DriveTrain {
         neoDriveTrainRearLeft.restoreFactoryDefaults();
         neoDriveTrainRearRight.restoreFactoryDefaults();
                               
-        neoDriveTrainRearLeft.follow(neoDriveTrainFrontLeft);
-        neoDriveTrainRearRight.follow(neoDriveTrainFrontRight);
-        neo550ShooterDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
-        neo550ShooterDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
+        // the follower will mirror the leader. The follower will spin in the
+        // same direction as the leader unless changed by adding an inversion
+        // parameter to the follow method.
+        REVLibError rc = neoDriveTrainRearLeft.follow(neoDriveTrainFrontLeft);
+        if (rc != REVLibError.kOk)
+        {
+            System.out.println("Error set follow mode rear left");
+        }
+        rc = neoDriveTrainRearRight.follow(neoDriveTrainFrontRight);
+        if (rc != REVLibError.kOk)
+        {
+            System.out.println("Error set follow mode rear right");
+        }
+
+        // NEO motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev
+        neoDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
+        neoDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
 
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
                                       neoDriveTrainFrontRight);                              
@@ -169,9 +183,9 @@ public class DriveTrain {
         SmartDashboard.putNumber("xr", xr);
 
         SmartDashboard.putNumber("leftPos", 
-                                 neo550ShooterDtFrontLeftEncoder.getPosition());
+                                 neoDtFrontLeftEncoder.getPosition());
         SmartDashboard.putNumber("rightPos", 
-                                neo550ShooterDtFrontRightEncoder.getPosition());
+                                neoDtFrontRightEncoder.getPosition());
 
         drive.tankDrive(xl, xr);
     }

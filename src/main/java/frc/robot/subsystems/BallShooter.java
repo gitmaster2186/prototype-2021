@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+// import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -27,6 +28,8 @@ public class BallShooter {
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
+        // TalonFXSensorCollection sensorCollection = 
+        //  falcon500ShooterFlyWheel2.getSensorCollection();
 
         falcon500ShooterFlyWheel1.configFactoryDefault();
         falcon500ShooterFlyWheel2.configFactoryDefault();
@@ -90,6 +93,8 @@ public class BallShooter {
 
         double xl = leftFlyfilter.calculate(speed);
         falcon500ShooterFlyWheel1.set(xl);
+
+        // primary closed loop 
         double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
 
@@ -97,6 +102,7 @@ public class BallShooter {
         falcon500ShooterFlyWheel2.set(xr);
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
+
     }
     
 
