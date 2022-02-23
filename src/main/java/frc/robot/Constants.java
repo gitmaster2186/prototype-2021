@@ -70,7 +70,7 @@ public class Constants {
 
     public static final double INTAKE_ON  =  0.5;
     public static final double INTAKE_OFF =  0.0;
-    public static final double FLYWHEEL_ON = 0.75;
+    public static final double FLYWHEEL_ON = 1.0;
     public static final double FLYWHEEL_OFF = 0.0;
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
     public static final double LOADER_SPEED_ON = 0.5;

@@ -122,14 +122,22 @@ public class Robot extends TimedRobot
     private Turret turret = new Turret(neo550ShooterTurret);
     private Climber climber = new Climber(falcon500Climber1,
                                           falcon500Climber2);
+
+    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(0.25);
+    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(0.25);
+                                      
+
     private BallShooter ballShooter = new BallShooter(falcon500ShooterFlyWheel1, 
-                                                      falcon500ShooterFlyWheel2);
+                                                      falcon500ShooterFlyWheel2,
+                                                      leftFlyfilter,
+                                                      rightFlyfilter);
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
                                                               neo550ShooterLoadRoller,
                                                               neo550ShooterLoadRollerEncoder);
-                             
+    // speed rate limiters for drive train
+    // !!!SID!!! XXX - is this needed??                             
     private SlewRateLimiter leftDtfilter = new SlewRateLimiter(0.25);
     private SlewRateLimiter rightDtfilter = new SlewRateLimiter(0.25);
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -10,6 +11,8 @@ public class BallShooter {
 
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
+    private SlewRateLimiter leftFlyfilter;
+    private SlewRateLimiter rightFlyfilter;
     
     private double startTime = 0;
     private boolean shooterActive = false;
@@ -19,10 +22,15 @@ public class BallShooter {
     private int stopFireBallCounter = 0;
 
     public BallShooter(WPI_TalonFX inFalcon500ShooterFlyWheel1,
-                       WPI_TalonFX inFalcon500ShooterFlyWheel2)
+                       WPI_TalonFX inFalcon500ShooterFlyWheel2,
+                       SlewRateLimiter inLeftFlyfilter,
+                       SlewRateLimiter inRightFlyfilter)
+                   
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
+        leftFlyfilter = inLeftFlyfilter;
+        rightFlyfilter = inRightFlyfilter;
     }
 
 
@@ -81,11 +89,14 @@ public class BallShooter {
             SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
         }
 
-        falcon500ShooterFlyWheel1.set(speed);
+        double xl = leftFlyfilter.calculate(speed);
+        falcon500ShooterFlyWheel1.set(xl);
         double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
 
-        falcon500ShooterFlyWheel2.set(speed);
+        double xr = rightFlyfilter.calculate(speed);
+        falcon500ShooterFlyWheel2.set(xr);
+
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
     }
