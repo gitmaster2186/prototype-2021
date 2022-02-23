@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -12,7 +13,11 @@ public class LoaderRollers {
     private WPI_TalonFX falcon500ShooterFlyWheel2;
     private CANSparkMax neo550ShooterLoadRoller;
     private RelativeEncoder neo550ShooterLoadRollerEncoder;   
-
+    // private boolean leftLimitSwitchTrippedValue = false;
+    // private boolean rightLimitSwitchTrippedValue = false;
+    // private DigitalInput leftLimitSwitch = new DigitalInput(Constants.DIOleftLimitSwitch);
+    // private DigitalInput rightLimitSwitch = new DigitalInput(Constants.DIOrightLimitSwitch);
+  
     public LoaderRollers(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                          WPI_TalonFX inFalcon500ShooterFlyWheel2,
                          CANSparkMax inNeo550ShooterLoadRoller,

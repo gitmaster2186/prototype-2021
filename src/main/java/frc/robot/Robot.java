@@ -25,14 +25,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LoaderRollers;
 import frc.robot.subsystems.Turret;
@@ -98,7 +97,10 @@ public class Robot extends TimedRobot
     private CANSparkMax neoDriveTrainFrontRight   = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_2_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neoDriveTrainRearLeft     = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_3_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neoDriveTrainRearRight    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_4_CAN_ID, MotorType.kBrushless);
-    DifferentialDrive drive;
+    DriveTrain driveTrain  = new DriveTrain(neoDriveTrainFrontLeft,
+                                            neoDriveTrainFrontRight,
+                                            neoDriveTrainRearLeft,
+                                            neoDriveTrainRearRight);
 
     private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_1_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_2_CAN_ID, MotorType.kBrushless);
@@ -136,12 +138,8 @@ public class Robot extends TimedRobot
                                                               falcon500ShooterFlyWheel2,
                                                               neo550ShooterLoadRoller,
                                                               neo550ShooterLoadRollerEncoder);
-    // speed rate limiters for drive train
-    // !!!SID!!! XXX - is this needed??                             
-    private SlewRateLimiter leftDtfilter = new SlewRateLimiter(0.25);
-    private SlewRateLimiter rightDtfilter = new SlewRateLimiter(0.25);
 
-
+  
     @Override
     public void robotInit()
     {
@@ -157,15 +155,6 @@ public class Robot extends TimedRobot
         falcon500Climber1.configFactoryDefault();
         falcon500Climber2.configFactoryDefault();
 
-        neoDriveTrainFrontLeft.restoreFactoryDefaults();
-        neoDriveTrainFrontRight.restoreFactoryDefaults();
-        neoDriveTrainRearLeft.restoreFactoryDefaults();
-        neoDriveTrainRearRight.restoreFactoryDefaults();
-
-        neoDriveTrainRearLeft.follow(neoDriveTrainFrontLeft);
-        neoDriveTrainRearRight.follow(neoDriveTrainFrontRight);
-        drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
-                                      neoDriveTrainFrontRight);
 
         // put some motor velocity numbers on dashboard
         SmartDashboard.putNumber("FrontIntake Velocity", 
@@ -199,69 +188,10 @@ public class Robot extends TimedRobot
     //     System.out.println("DeployIntake");
     // }
 
-    // Vision-alignment mode
-    void aimAssist(TankSpeeds tankSpeed)
-    {
-        double x = 0.0;
-        double y = 0.0;
-        double area = 0.0;
-
-        System.out.println("assist mode");
-
-        limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
-        NetworkTableEntry tv = limeLightTable.getEntry(Constants.LIMELIGHT_VALID_TARGETS);
-        tankSpeed.targets = tv.getDouble(0.0);
-
-        if (tankSpeed.targets > 0)
-        {
-            NetworkTableEntry tx = limeLightTable.getEntry(Constants.LIMELIGHT_HORIZONTAL_OFFSET);
-            NetworkTableEntry ty = limeLightTable.getEntry(Constants.LIMELIGHT_VERTICAL_OFFSET);
-            NetworkTableEntry ta = limeLightTable.getEntry(Constants.LIMELIGHT_TARGET_AREA);
-        
-            //read values periodically
-            x = tx.getDouble(0.0);
-            y = ty.getDouble(0.0);
-            area = ta.getDouble(0.0);
-
-            double heading_error = -x;
-            double distance_error = -y;
-            double steering_adjust = 0.0f;
-            double KpAim = -0.1f;
-            double KpDistance = -0.1f;
-            double min_aim_command = 0.05f;
-
-            if (x > 1.0)
-            {
-                steering_adjust = KpAim*heading_error - min_aim_command;
-            }
-            else if (x < 1.0)
-            {
-                steering_adjust = KpAim*heading_error + min_aim_command;
-            }
-    
-            double distance_adjust = KpDistance * distance_error;
-    
-            tankSpeed.leftSpeed += steering_adjust + distance_adjust;
-            tankSpeed.rightSpeed -= steering_adjust + distance_adjust;
-        } else {
-            // If we have no targets, don't do anything
-            if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
-            {
-                System.out.println("visionAlignmentTarget -- no targets -- ");
-            }
-        }
-
-        //post to smart dashboard
-        SmartDashboard.putNumber("LimelightX", x);
-        SmartDashboard.putNumber("LimelightY", y);
-        SmartDashboard.putNumber("LimelightArea", area);
-        SmartDashboard.putNumber("LimelightTargets", tankSpeed.targets);
-
-    }
-
     @Override
     // gets called 50 times a second
     public void teleopPeriodic() {
+        boolean driverAssistMode;
         TankSpeeds tankSpeed = getManualTankSpeed();
 
         /* !!!SID!!! - review each of these. Do we want to call
@@ -285,17 +215,6 @@ public class Robot extends TimedRobot
         else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
         {
             turret.rotate(Constants.TURRET_OFF);
-        }
-
-        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) 
-        {
-            // adjust tank speed to handle target if one is seen
-            aimAssist(tankSpeed);
-        } 
-        else
-        {
-            // if we're not aiming the turret then make sure the LEDs are off
-            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
         }
 
         // tested - working
@@ -352,23 +271,29 @@ public class Robot extends TimedRobot
         // }
 
 
+        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) 
+        {
+            driverAssistMode = true;
+        } 
+        else
+        {
+            driverAssistMode = false;
+        }
+
         if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
         {
-            System.out.println("manual -- leftSpeed: " + 
+            System.out.println("leftSpeed: " + 
                                 tankSpeed.leftSpeed + 
                                 " rightSpeed: " + 
-                                tankSpeed.rightSpeed);
+                                tankSpeed.rightSpeed +
+                                " driverAssist: " +
+                                driverAssistMode);
         }
-        SmartDashboard.putNumber("targets", tankSpeed.targets);
         SmartDashboard.putNumber("leftSpeed", tankSpeed.leftSpeed);
         SmartDashboard.putNumber("rightSpeed", tankSpeed.rightSpeed);
+        SmartDashboard.putBoolean("driverAssistMode", driverAssistMode);
 
         // move the robot
-        double xl = leftDtfilter.calculate(tankSpeed.leftSpeed);
-        double xr = rightDtfilter.calculate(tankSpeed.rightSpeed);
-        SmartDashboard.putNumber("xl", xl);
-        SmartDashboard.putNumber("xr", xr);
-        drive.tankDrive(xl, xr);
-//        drive.tankDrive(tankSpeed.leftSpeed, tankSpeed.rightSpeed);
+        driveTrain.tankDrive(tankSpeed, driverAssistMode);
     }
 }

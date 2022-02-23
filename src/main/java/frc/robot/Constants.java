@@ -81,6 +81,9 @@ public class Constants {
     public static final double CLIMBER_SPEED_ON = 0.25;
     public static final double CLIMBER_SPEED_OFF = 0;
     public static final double MIN_FLYWHEEL_VEL = 0;
+
+    public static final int DIOleftLimitSwitch = 0;
+    public static final int DIOrightLimitSwitch = 1;
     
 
 }
