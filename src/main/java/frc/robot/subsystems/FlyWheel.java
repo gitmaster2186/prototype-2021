@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
-public class BallShooter {
+public class FlyWheel {
 
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
@@ -22,7 +22,7 @@ public class BallShooter {
     private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(0.75);
     private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(0.75);
                                       
-    public BallShooter(WPI_TalonFX inFalcon500ShooterFlyWheel1,
+    public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                        WPI_TalonFX inFalcon500ShooterFlyWheel2)
                    
     {

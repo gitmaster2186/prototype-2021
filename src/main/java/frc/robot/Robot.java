@@ -1,5 +1,7 @@
 /*
  * TBD:
+ *    - find the flywheel velocity that we want to shoot the ball
+ *      - code in FlyWheel.java
  *    - use limit switch to determine when ball is in position to load
  *    - cameras?
  *      - vision camera(s)
@@ -25,7 +27,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.BallShooter;
+import frc.robot.subsystems.FlyWheel;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -88,8 +90,8 @@ public class Robot extends TimedRobot
                                           falcon500Climber2);
 
 
-    private BallShooter ballShooter = new BallShooter(falcon500ShooterFlyWheel1, 
-                                                      falcon500ShooterFlyWheel2);
+    private FlyWheel ballShooter = new FlyWheel(falcon500ShooterFlyWheel1, 
+                                                falcon500ShooterFlyWheel2);
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
