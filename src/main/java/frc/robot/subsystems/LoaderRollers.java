@@ -12,8 +12,8 @@ import frc.robot.Constants;
 public class LoaderRollers {
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
-    private CANSparkMax neo550ShooterLoadRoller1;
-    private CANSparkMax neo550ShooterLoadRoller2;
+    private CANSparkMax neo550ShooterLoadRollerFront;
+    private CANSparkMax neo550ShooterLoadRollerBack;
     private RelativeEncoder neo550ShooterLoadRollerEncoder;
     private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
 
@@ -24,21 +24,21 @@ public class LoaderRollers {
   
     public LoaderRollers(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                          WPI_TalonFX inFalcon500ShooterFlyWheel2,
-                         CANSparkMax inNeo550ShooterLoadRoller1,
-                         CANSparkMax inNeo550ShooterLoadRoller2)
+                         CANSparkMax inneo550ShooterLoadRollerFront,
+                         CANSparkMax inneo550ShooterLoadRollerBack)
     {
         // we need the fly wheels because we need to check it is up to speed
         // before turning on the load roller.
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
-        neo550ShooterLoadRoller1 = inNeo550ShooterLoadRoller1;
-        neo550ShooterLoadRoller2 = inNeo550ShooterLoadRoller2;
+        neo550ShooterLoadRollerFront = inneo550ShooterLoadRollerFront;
+        neo550ShooterLoadRollerBack = inneo550ShooterLoadRollerBack;
 
-        neo550ShooterLoadRoller1.restoreFactoryDefaults();
-        neo550ShooterLoadRoller2.restoreFactoryDefaults();
+        neo550ShooterLoadRollerFront.restoreFactoryDefaults();
+        neo550ShooterLoadRollerBack.restoreFactoryDefaults();
 
         // neo550 motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev.
-        neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRoller1.getEncoder();   
+        neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRollerFront.getEncoder();   
     }
     /*
      * toggle the loader rollers on/off
@@ -71,8 +71,8 @@ public class LoaderRollers {
         {
             double fltSpeed = loaderFilter.calculate(speed);
 
-            neo550ShooterLoadRoller1.set(fltSpeed);
-            neo550ShooterLoadRoller2.set(fltSpeed);
+            neo550ShooterLoadRollerFront.set(fltSpeed);
+            neo550ShooterLoadRollerBack.set(fltSpeed);
         }
         
         // if we want RPS instead of RPM?

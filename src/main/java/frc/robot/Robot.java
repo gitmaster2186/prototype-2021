@@ -74,8 +74,8 @@ public class Robot extends TimedRobot
 
     private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_1_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoadRoller1  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoadRoller2  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_2_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoadRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_1_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoadRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_2_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
     private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_1_CAN_ID);
@@ -96,8 +96,8 @@ public class Robot extends TimedRobot
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
-                                                              neo550ShooterLoadRoller1,
-                                                              neo550ShooterLoadRoller2);
+                                                              neo550ShooterLoadRollerFront,
+                                                              neo550ShooterLoadRollerBack);
 
   
     @Override
