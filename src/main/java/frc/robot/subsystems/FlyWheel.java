@@ -100,6 +100,20 @@ public class FlyWheel {
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
 
     }
-    
 
+
+    public boolean upToSpeed() 
+    {
+        boolean ret = false;
+        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        if ((flyVel1 >= Constants.MIN_FLYWHEEL_VEL) &&
+            (flyVel2 >= Constants.MIN_FLYWHEEL_VEL))
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+    
 }

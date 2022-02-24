@@ -58,22 +58,10 @@ public class LoaderRollers {
         {
              speed = Constants.LOADER_SPEED_OFF;
         }    
-        // get the motor velocity of the flywheels
-        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel1);
-        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", flyVel2);
+        double fltSpeed = loaderFilter.calculate(speed);
 
-        // don't allow the loader to load the ball until 
-        // the flywheels are up to speed?
-        if ((flyVel1 >= Constants.MIN_FLYWHEEL_VEL) &&
-            (flyVel2 >= Constants.MIN_FLYWHEEL_VEL))
-        {
-            double fltSpeed = loaderFilter.calculate(speed);
-
-            neo550ShooterLoadRollerFront.set(fltSpeed);
-            neo550ShooterLoadRollerBack.set(fltSpeed);
-        }
+        neo550ShooterLoadRollerFront.set(fltSpeed);
+        neo550ShooterLoadRollerBack.set(fltSpeed);
         
         // if we want RPS instead of RPM?
         // neo550ShooterLoadRollerEncoder.setVelocityConversionFactor(60);
@@ -81,6 +69,10 @@ public class LoaderRollers {
         // put up the rpm number
         SmartDashboard.putNumber("LoadRoller Velocity", 
                                  neo550ShooterLoadRollerEncoder.getVelocity());
+    }
+
+    public boolean ballLoaded() {
+        return true;
     }
 
 }

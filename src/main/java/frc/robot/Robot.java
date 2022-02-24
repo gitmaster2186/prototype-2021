@@ -100,7 +100,7 @@ public class Robot extends TimedRobot
                                                               neo550ShooterLoadRollerFront,
                                                               neo550ShooterLoadRollerBack);
     // !!!SID!!! - XXX - TBD
-    private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel);
+    private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
 
     @Override
     public void robotInit()
@@ -177,22 +177,31 @@ public class Robot extends TimedRobot
             loaderRollers.toggle(false);
         }
 
-        // as long as the trigger is pushed keep firing
-        if(altJoystick.getRawButton(Constants.FIRE_TURRET))
+        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_FLYWHEELS))
         {
             flyWheel.toggle(true);
         }
-        else
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_FLYWHEELS))
         {
             flyWheel.toggle(false);
         }
 
         // returns true if the button is being held down
         // at the time that this method is being called
-        if(altJoystick.getRawButton(Constants.FIRE_TURRET_TIMED))
+        if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_TIMED))
         {
             // activate the shooter for 1 second
             flyWheel.timed(1.0);
+        }
+
+        // as long as the trigger is pushed keep firing
+        if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER))
+        {
+            ballShooter.manualShoot();
+        }
+        else
+        {
+            ballShooter.manualStop();
         }
 
         // !!!SID!!! - this will probably need more than this
