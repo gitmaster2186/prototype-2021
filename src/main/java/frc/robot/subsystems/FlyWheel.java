@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-// import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +17,8 @@ public class FlyWheel {
     private int stopballShootTimedCounter = 0;
     private int startFireBallCounter = 0;
     private int stopFireBallCounter = 0;
-    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(0.75);
-    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(0.75);
+    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
+    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
                                       
     public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                        WPI_TalonFX inFalcon500ShooterFlyWheel2)
@@ -28,8 +26,6 @@ public class FlyWheel {
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
         falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
-        // TalonFXSensorCollection sensorCollection = 
-        //  falcon500ShooterFlyWheel2.getSensorCollection();
 
         falcon500ShooterFlyWheel1.configFactoryDefault();
         falcon500ShooterFlyWheel2.configFactoryDefault();

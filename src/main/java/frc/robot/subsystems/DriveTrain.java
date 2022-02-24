@@ -69,8 +69,8 @@ public class DriveTrain {
 
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
                                       neoDriveTrainFrontRight);                              
-        leftDtfilter = new SlewRateLimiter(0.25);
-        rightDtfilter = new SlewRateLimiter(0.25);
+        leftDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
+        rightDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
 
     }
 

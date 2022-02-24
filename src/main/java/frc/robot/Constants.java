@@ -53,6 +53,7 @@ public class Constants {
     public static final int SPARK_NEO550_INTAKE_2_CAN_ID = 1;
     public static final int SPARK_NEO550_TURRET_CAN_ID = 8;
     public static final int SPARK_NEO550_ROLLER_1_CAN_ID = 9;
+    public static final int SPARK_NEO550_ROLLER_2_CAN_ID = 10;
 
     // climber
     public static final int FALCON500_CLIMBER_1_CAN_ID = 3;
@@ -84,6 +85,13 @@ public class Constants {
 
     public static final int DIOleftLimitSwitch = 0;
     public static final int DIOrightLimitSwitch = 1;
+
+    // Slew Rate Limiter Constants    
+    public static final double FLY_WHEEL_RAMP_UP_POWER = 0.75;
+    public static final double DRIVE_TRAIN_RAMP_UP_POWER = 0.25;
+    public static final double TURRET_RAMP_UP_POWER = 0.75;
+    public static final double INTAKE_RAMP_UP_POWER = 0.75;
+    public static final double LOADER_RAMP_UP_POWER = 0.75;
     
 
 }
