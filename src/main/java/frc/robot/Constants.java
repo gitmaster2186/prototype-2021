@@ -22,7 +22,7 @@ public class Constants {
      *  12.  debug
      */
 
-    // alt joystick -- start -- extreme 3dpro joystick button mapping
+    // alt joystick -- start -- extreme 3dpro joystick button mapping 
     public static final int ACTIVATE_SHOOTER          = 1;       // stick, trigger                          -- vision assisted driving and shooting
     public static final int AIM_ASSIST_BUTTON         = 2;       // stick, thumb button                     -- vision assisted driving
 
