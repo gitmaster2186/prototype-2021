@@ -10,7 +10,7 @@ import frc.robot.Constants;
 public class Intake {
     private CANSparkMax neo550ShooterFrontIntake;
     private CANSparkMax neo550ShooterRearIntake;
-    private RelativeEncoder neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
+    private RelativeEncoder neo550ShooterFrontIntakeEncoder;   
     private SlewRateLimiter intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
 
     public Intake(CANSparkMax inNeo550ShooterFrontIntake,
@@ -18,6 +18,7 @@ public class Intake {
     {
         neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
         neo550ShooterRearIntake  = inNeo550ShooterRearIntake;
+        neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
 
         neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();

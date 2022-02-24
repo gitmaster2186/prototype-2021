@@ -93,7 +93,7 @@ public class Robot extends TimedRobot
 
 
     private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
-                                                falcon500ShooterFlyWheel2);
+                                             falcon500ShooterFlyWheel2);
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
@@ -133,7 +133,7 @@ public class Robot extends TimedRobot
     // gets called 50 times a second
     public void teleopPeriodic() {
         boolean driverAssistMode;
-        TankSpeeds tankSpeed = getManualTankSpeed();
+        TankSpeeds tankSpeed = getManualTankSpeed(); // get speed values from joysticks
 
         /* !!!SID!!! - review each of these. Do we want to call
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
