@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.FlyWheel;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -91,15 +92,16 @@ public class Robot extends TimedRobot
                                           falcon500Climber2);
 
 
-    private FlyWheel ballShooter = new FlyWheel(falcon500ShooterFlyWheel1, 
+    private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
                                                 falcon500ShooterFlyWheel2);
 
      private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
                                                               falcon500ShooterFlyWheel2,
                                                               neo550ShooterLoadRollerFront,
                                                               neo550ShooterLoadRollerBack);
+    // !!!SID!!! - XXX - TBD
+    private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel);
 
-  
     @Override
     public void robotInit()
     {}
@@ -178,11 +180,11 @@ public class Robot extends TimedRobot
         // as long as the trigger is pushed keep firing
         if(altJoystick.getRawButton(Constants.FIRE_TURRET))
         {
-            ballShooter.toggle(true);
+            flyWheel.toggle(true);
         }
         else
         {
-            ballShooter.toggle(false);
+            flyWheel.toggle(false);
         }
 
         // returns true if the button is being held down
@@ -190,7 +192,7 @@ public class Robot extends TimedRobot
         if(altJoystick.getRawButton(Constants.FIRE_TURRET_TIMED))
         {
             // activate the shooter for 1 second
-            ballShooter.timed(1.0);
+            flyWheel.timed(1.0);
         }
 
         // !!!SID!!! - this will probably need more than this
