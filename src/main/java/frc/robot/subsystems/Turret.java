@@ -22,8 +22,13 @@ public class Turret {
 
     public void rotate(double speed)
     {
+        double fltSpeed = 0.0;
+
         System.out.println("turretRotate");
-        double fltSpeed = turretfilter.calculate(speed);
+        if (speed != 0.0)
+        {
+            fltSpeed = turretfilter.calculate(speed);
+        }
         neo550ShooterTurret.set(fltSpeed);
     }
 }

@@ -72,9 +72,10 @@ public class FlyWheel {
     public void toggle(boolean buttonPressed)
     {
         double speed;
+        double xl = 0.0;
+        double xr = 0.0;
         if (buttonPressed == false)
         {
-            speed = Constants.FLYWHEEL_OFF;
             shooterActive = false;
             stopFireBallCounter += 1;
             SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
@@ -84,17 +85,17 @@ public class FlyWheel {
             speed = Constants.FLYWHEEL_ON;
             shooterActive = true;
             startFireBallCounter += 1;
+            xl = leftFlyfilter.calculate(speed);
+            xr = rightFlyfilter.calculate(speed);
             SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
         }
 
-        double xl = leftFlyfilter.calculate(speed);
         falcon500ShooterFlyWheel1.set(xl);
 
         // primary closed loop 
         double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
 
-        double xr = rightFlyfilter.calculate(speed);
         falcon500ShooterFlyWheel2.set(xr);
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyWheel 2 velocity", vel2);

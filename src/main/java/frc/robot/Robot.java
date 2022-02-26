@@ -95,9 +95,7 @@ public class Robot extends TimedRobot
     private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
                                              falcon500ShooterFlyWheel2);
 
-     private LoaderRollers loaderRollers = new LoaderRollers (falcon500ShooterFlyWheel1,
-                                                              falcon500ShooterFlyWheel2,
-                                                              neo550ShooterLoadRollerFront,
+     private LoaderRollers loaderRollers = new LoaderRollers (neo550ShooterLoadRollerFront,
                                                               neo550ShooterLoadRollerBack);
     // !!!SID!!! - XXX - TBD
     private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
@@ -159,7 +157,7 @@ public class Robot extends TimedRobot
         }
 
         // tested - working
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_INTAKE))
+        if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE))
         {
             intake.toggle(true); 
         }
@@ -168,16 +166,18 @@ public class Robot extends TimedRobot
             intake.toggle(false);
         }
 
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_LOADER_ROLLERS))
+        if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS))
         {
+            System.out.println("LON");
             loaderRollers.toggle(true);
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
         {
+            System.out.println("LOFF");
             loaderRollers.toggle(false);
         }
 
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_FLYWHEELS))
+        if (altJoystick.getRawButton(Constants.TOGGLE_FLYWHEELS))
         {
             flyWheel.toggle(true);
         }

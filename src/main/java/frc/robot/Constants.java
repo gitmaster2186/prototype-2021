@@ -64,15 +64,15 @@ public class Constants {
     public static final int SPARK_NEO_DRIVETRAIN_3_CAN_ID = 2;
     public static final int SPARK_NEO_DRIVETRAIN_4_CAN_ID = 7;
 
-    public static final double INTAKE_ON  =  0.5;
+    public static final double INTAKE_ON  =  0.1;
     public static final double INTAKE_OFF =  0.0;
-    public static final double FLYWHEEL_ON = 1.0;
+    public static final double FLYWHEEL_ON = 0.5;
     public static final double FLYWHEEL_OFF = 0.0;
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
     public static final double LOADER_SPEED_ON = 0.5;
     public static final double LOADER_SPEED_OFF = 0;
 
-    public static final double TURRET_ON = 0.1;
+    public static final double TURRET_ON = 0.5;
     public static final double TURRET_OFF = 0.0;
     public static final double CLIMBER_SPEED_ON = 0.25;
     public static final double CLIMBER_SPEED_OFF = 0.0;
@@ -89,7 +89,7 @@ public class Constants {
     public static final double FLY_WHEEL_RAMP_UP_POWER = 0.75;
     public static final double DRIVE_TRAIN_RAMP_UP_POWER = 0.25;
     public static final double TURRET_RAMP_UP_POWER = 0.75;
-    public static final double INTAKE_RAMP_UP_POWER = 0.75;
+    public static final double INTAKE_RAMP_UP_POWER = 0.05;
     public static final double LOADER_RAMP_UP_POWER = 0.75;
     
     // vision constants

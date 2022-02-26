@@ -35,14 +35,13 @@ public class Intake {
     {
         System.out.println("intakeToggle");
         double speed = Constants.INTAKE_ON;
+        double fltSpeed = 0.0;
 
-        if (toggleOn == false)
+        if (toggleOn == true)
         {
-            speed = Constants.INTAKE_OFF;
+            fltSpeed = intakeFilter.calculate(speed);
         }
-
-        double fltSpeed = intakeFilter.calculate(speed);
-
+        
         neo550ShooterFrontIntake.set(fltSpeed);
         neo550ShooterRearIntake.set(fltSpeed);
 

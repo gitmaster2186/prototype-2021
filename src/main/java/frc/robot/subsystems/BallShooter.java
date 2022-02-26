@@ -18,23 +18,23 @@ public class BallShooter {
    
    public void manualStop()
    {
-       loaderRollers.toggle(false);
+//       loaderRollers.toggle(false);
 
        // !!!SID!!! XXX - do we have to stop the flywheel also?
    }
 
    public void manualShoot()
    {
-       // is there a ball is loadable position?
-        if (loaderRollers.ballLoaded())
-        {
-           // yes. are the flywheels up to speed?
-            if (flyWheel.upToSpeed())
-            {
-               // yes. send the ball up to the flywheels
-               loaderRollers.toggle(true);
-            }
-        }
+    //    // is there a ball is loadable position?
+    //     if (loaderRollers.ballLoaded())
+    //     {
+    //        // yes. are the flywheels up to speed?
+    //         if (flyWheel.upToSpeed())
+    //         {
+    //            // yes. send the ball up to the flywheels
+    //            loaderRollers.toggle(true);
+    //         }
+    //     }
 
    }
 
