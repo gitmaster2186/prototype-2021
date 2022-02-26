@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class LoaderRollers {
-    private CANSparkMax neo550ShooterLoadRollerFront;
-    private CANSparkMax neo550ShooterLoadRollerBack;
-    //private RelativeEncoder neo550ShooterLoadRollerEncoder;
+    private CANSparkMax neo550ShooterLoaderRollerFront;
+    private CANSparkMax neo550ShooterLoaderRollerBack;
+    //private RelativeEncoder neo550ShooterLoaderRollerEncoder;
     private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
     int dbgCount = 0;
     // private boolean leftLimitSwitchTrippedValue = false;
@@ -20,19 +20,19 @@ public class LoaderRollers {
     // private DigitalInput leftLimitSwitch = new DigitalInput(Constants.DIOleftLimitSwitch);
     // private DigitalInput rightLimitSwitch = new DigitalInput(Constants.DIOrightLimitSwitch);
   
-    public LoaderRollers(CANSparkMax inneo550ShooterLoadRollerFront,
-                         CANSparkMax inneo550ShooterLoadRollerBack)
+    public LoaderRollers(CANSparkMax inneo550ShooterLoaderRollerFront,
+                         CANSparkMax inneo550ShooterLoaderRollerBack)
     {
         // we need the fly wheels because we need to check it is up to speed
         // before turning on the load roller.
-        neo550ShooterLoadRollerFront = inneo550ShooterLoadRollerFront;
-        neo550ShooterLoadRollerBack = inneo550ShooterLoadRollerBack;
+        neo550ShooterLoaderRollerFront = inneo550ShooterLoaderRollerFront;
+        neo550ShooterLoaderRollerBack = inneo550ShooterLoaderRollerBack;
 
-        neo550ShooterLoadRollerFront.restoreFactoryDefaults();
-        neo550ShooterLoadRollerBack.restoreFactoryDefaults();
+        neo550ShooterLoaderRollerFront.restoreFactoryDefaults();
+        neo550ShooterLoaderRollerBack.restoreFactoryDefaults();
 
         // neo550 motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev.
-        // neo550ShooterLoadRollerEncoder  = neo550ShooterLoadRollerFront.getEncoder();   
+        // neo550ShooterLoaderRollerEncoder  = neo550ShooterLoaderRollerFront.getEncoder();   
     }
     /*
      * toggle the loader rollers on/off
@@ -41,8 +41,8 @@ public class LoaderRollers {
      * 
      * objects used: falcon500ShooterFlyWheel1, 
      *               falcon500ShooterFlyWheel2,
-     *               neo550ShooterLoadRoller,
-     *               neo550ShooterLoadRollerEncoder
+     *               neo550ShooterLoaderRoller,
+     *               neo550ShooterLoaderRollerEncoder
      * 
     
     
@@ -60,8 +60,8 @@ public class LoaderRollers {
             fltSpeed = loaderFilter.calculate(speed);
         }
         
-        neo550ShooterLoadRollerFront.set(fltSpeed);
-        neo550ShooterLoadRollerBack.set(fltSpeed);
+        neo550ShooterLoaderRollerFront.set(fltSpeed);
+        neo550ShooterLoaderRollerBack.set(fltSpeed);
 
         SmartDashboard.putNumber("FrontLoader speed", 
                                  speed);
@@ -76,15 +76,15 @@ public class LoaderRollers {
     //     }    
     //     double fltSpeed = loaderFilter.calculate(speed);
 
-    //     neo550ShooterLoadRollerFront.set(fltSpeed);
-    //     neo550ShooterLoadRollerBack.set(fltSpeed);
+    //     neo550ShooterLoaderRollerFront.set(fltSpeed);
+    //     neo550ShooterLoaderRollerBack.set(fltSpeed);
         
     //     // if we want RPS instead of RPM?
-    //     // neo550ShooterLoadRollerEncoder.setVelocityConversionFactor(60);
+    //     // neo550ShooterLoaderRollerEncoder.setVelocityConversionFactor(60);
         
     //     // put up the rpm number
     //     SmartDashboard.putNumber("LoadRoller Velocity", 
-    //                              neo550ShooterLoadRollerEncoder.getVelocity());
+    //                              neo550ShooterLoaderRollerEncoder.getVelocity());
     // }
 
     public boolean ballLoaded() {

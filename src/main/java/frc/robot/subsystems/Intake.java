@@ -11,8 +11,9 @@ public class Intake {
     private CANSparkMax neo550ShooterFrontIntake;
     private CANSparkMax neo550ShooterRearIntake;
     private RelativeEncoder neo550ShooterFrontIntakeEncoder;   
-    private SlewRateLimiter intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
 
+    private SlewRateLimiter intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
+    int calledCount = 0;
     public Intake(CANSparkMax inNeo550ShooterFrontIntake,
                   CANSparkMax inNeo550ShooterRearIntake)
     {
@@ -22,6 +23,8 @@ public class Intake {
 
         neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();
+
+        intakeFilter.reset(0.25);
     }
 
     /*
@@ -36,17 +39,28 @@ public class Intake {
         System.out.println("intakeToggle");
         double speed = Constants.INTAKE_ON;
         double fltSpeed = 0.0;
+        calledCount += 1;
+        if (calledCount == 1)
+        {
+            intakeFilter.reset(0.25);
+        }
 
         if (toggleOn == true)
         {
             fltSpeed = intakeFilter.calculate(speed);
         }
-        
+        else
+        {
+            // intakeFilter.reset(0.25);
+            calledCount = 0;
+        }
         neo550ShooterFrontIntake.set(fltSpeed);
         neo550ShooterRearIntake.set(fltSpeed);
 
+        SmartDashboard.putNumber("FrontIntake called", 
+                                 calledCount);
         SmartDashboard.putNumber("FrontIntake speed", 
-                                 speed);
+                                 fltSpeed);
         SmartDashboard.putNumber("FrontIntake Velocity", 
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
     }   

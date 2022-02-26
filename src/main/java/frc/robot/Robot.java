@@ -75,8 +75,8 @@ public class Robot extends TimedRobot
 
     private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_1_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoadRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoadRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_ROLLER_2_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoaderRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_LOADER_1_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoaderRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_LOADER_2_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
     private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_1_CAN_ID);
@@ -95,11 +95,11 @@ public class Robot extends TimedRobot
     private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
                                              falcon500ShooterFlyWheel2);
 
-     private LoaderRollers loaderRollers = new LoaderRollers (neo550ShooterLoadRollerFront,
-                                                              neo550ShooterLoadRollerBack);
+     private LoaderRollers loaderRollers = new LoaderRollers (neo550ShooterLoaderRollerFront,
+                                                              neo550ShooterLoaderRollerBack);
     // !!!SID!!! - XXX - TBD
     private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
-
+    int intakeCount = 0;
     @Override
     public void robotInit()
     {}
@@ -159,12 +159,14 @@ public class Robot extends TimedRobot
         // tested - working
         if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE))
         {
+            intakeCount += 1;
             intake.toggle(true); 
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE))
         {
             intake.toggle(false);
         }
+        SmartDashboard.putNumber("intakeCount", intakeCount);
 
         if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS))
         {
