@@ -39,7 +39,7 @@ public class Constants {
     public static final int ACTIVATE_SHOOTER_TIMED    = 9;       // base, left, middle, outside
     public static final int TOGGLE_CLIMBER            = 10;      // base, left, middle, inside
 
-    public static final int AVAILABLE_2_BUTTON        = 11;      // base, left, bottom, outside             -- available, no function
+    public static final int LIMELIGHT_LEDS_BUTTON        = 11;      // base, left, bottom, outside             -- available, no function
 
     public static final int DEBUG_BUTTON              = 12;      // base, left, bottom, inside              -- activate debug prints to console
     // alt joystick -- end   -- extreme 3dpro joystick button mapping

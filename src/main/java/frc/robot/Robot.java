@@ -19,11 +19,13 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +37,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LoaderRollers;
 import frc.robot.subsystems.Turret;
 import frc.robot.utils.TankSpeeds;
+
+import edu.wpi.first.wpilibj.SPI;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -51,7 +55,7 @@ public class Robot extends TimedRobot
                              -rightJoystick.getY());
     }
 
-
+    AHRS ahrs; // navx 
       
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable limeLightTable = inst.getTable("limelight");
@@ -102,14 +106,28 @@ public class Robot extends TimedRobot
     int intakeCount = 0;
     @Override
     public void robotInit()
-    {}
+    {
+        try {
+            /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+            /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+            /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+            // RoboRIO MXP I2C Interface
+            ahrs  = new AHRS(SPI.Port.kMXP); 
+        } catch (RuntimeException ex ) {
+            DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+        }
+        ahrs.reset();
+ 
+
+    }
 
 
     @Override
     public void teleopInit() 
     {    
         limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
-    }
+//        limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+}
 
 /*
     // remap inVal from in min and max to out in min max ranges
@@ -133,9 +151,26 @@ public class Robot extends TimedRobot
         boolean driverAssistMode;
         TankSpeeds tankSpeed = getManualTankSpeed(); // get speed values from joysticks
 
-        /* !!!SID!!! - review each of these. Do we want to call
+        double angle = ahrs.getAngle();
+        SmartDashboard.putBoolean(  "IMU_Connected",        ahrs.isConnected());
+        SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
+        SmartDashboard.putNumber(   "IMU_Yaw",              ahrs.getYaw());
+        SmartDashboard.putNumber(   "IMU_Pitch",            ahrs.getPitch());
+        SmartDashboard.putNumber(   "IMU_Roll",             ahrs.getRoll());        
+        SmartDashboard.putNumber(   "IMU_Angle",            ahrs.getAngle());
+        /* 
+         * !!!SID!!! - review each of these. Do we want to call
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
          */
+        if (altJoystick.getRawButton(Constants.LIMELIGHT_LEDS_BUTTON))
+        {
+            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.LIMELIGHT_LEDS_BUTTON))
+        {
+            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds on
+        }
+
 
         // !!!SID!!! - Should we change the turret to use the joystick y axis?
         if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT))

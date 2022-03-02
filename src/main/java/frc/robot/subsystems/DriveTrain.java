@@ -123,16 +123,24 @@ public class DriveTrain {
             NetworkTableEntry ta = limeLightTable.getEntry(Constants.LIMELIGHT_TARGET_AREA);
         
             //read values periodically
-            x = tx.getDouble(0.0);
-            y = ty.getDouble(0.0);
+            x    = tx.getDouble(0.0);
+            y    = ty.getDouble(0.0);
             area = ta.getDouble(0.0);
-
+        
             double heading_error = -x;
             double distance_error = -y;
             double steering_adjust = 0.0f;
+
+            // !!!SID!!! XXX - these 3 constantsneed to be tuned to our robot
+
+            // Beware, if you set KpAim or min_aim_command too high, your 
+            // robot can become unstable and can oscillate back and forth 
+            // as it overshoots the target
             double KpAim = -0.1f;
-            double KpDistance = -0.1f;
+            // minimum amount of power needed for the robot to actually move 
+            // (you actually want to use a little bit less than this).
             double min_aim_command = 0.05f;
+            double KpDistance = -0.1f;
 
             if (x > 1.0)
             {
@@ -145,10 +153,10 @@ public class DriveTrain {
     
             double distance_adjust = KpDistance * distance_error;
     
-            tankSpeed.leftSpeed += steering_adjust + distance_adjust;
-            tankSpeed.rightSpeed -= steering_adjust + distance_adjust;
+            tankSpeed.leftSpeed  += (steering_adjust + distance_adjust);
+            tankSpeed.rightSpeed -= (steering_adjust + distance_adjust);
         }
-
+    
         //post to smart dashboard
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
@@ -172,7 +180,7 @@ public class DriveTrain {
         else
         {
             // if we're not aiming the turret then make sure the LEDs are off
-            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
+            //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
 
             xl = leftDtfilter.calculate(tankSpeed.leftSpeed);
             xr = rightDtfilter.calculate(tankSpeed.rightSpeed);

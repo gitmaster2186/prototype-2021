@@ -1,1 +1,8 @@
 this is the open bug list
+- enable usb camera
+- disabled timed shooter button
+- write autonomous mode
+    -  drive off tarmac
+    - shoot preloaded ball
+    - wait for teleop mode
+- ???
