@@ -18,7 +18,7 @@ public class Constants {
      *   8.  turn turret right
      *   9.  activate shooter timed
      *  10.  toggle climber
-     *  11.  unassigned
+     *  11.  limelight LEDs
      *  12.  debug
      */
 

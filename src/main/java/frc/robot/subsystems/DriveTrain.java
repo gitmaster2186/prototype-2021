@@ -135,7 +135,10 @@ public class DriveTrain {
 
             // Beware, if you set KpAim or min_aim_command too high, your 
             // robot can become unstable and can oscillate back and forth 
-            // as it overshoots the target
+            // as it overshoots the target.
+            // What happens if you set them too low? 
+            //    Changes too slowly or not at all?
+            //
             double KpAim = -0.1f;
             // minimum amount of power needed for the robot to actually move 
             // (you actually want to use a little bit less than this).
