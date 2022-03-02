@@ -1,16 +1,19 @@
 this is the open bug list
 - enable usb camera
+    - just call startAutomaticCapture from robotInit.
 - disable the timed shooter button
 - write autonomous mode
     - drive off tarmac
     - shoot preloaded ball
     - wait for teleop mode
 - make a backup driver station
-    on Roman's robotics laptop
+    on Roman's robotics laptop?
 - verify all s/w version are up to date
     - roborio
     - robot code
     - ???
 - disable turret buttons after inital test?
+- should the driver assist button be moved from the aux joystick to one of the driver joysticks?
 - ???
+
 

@@ -117,7 +117,7 @@ public class Robot extends TimedRobot
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
         ahrs.reset();
- 
+        int x = WPILibVersion.Version;
 
     }
 
@@ -225,21 +225,21 @@ public class Robot extends TimedRobot
 
         // returns true if the button is being held down
         // at the time that this method is being called
-        if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_TIMED))
-        {
-            // activate the shooter for 1 second
-            flyWheel.timed(1.0);
-        }
+        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_TIMED))
+        // {
+        //     // activate the shooter for 1 second
+        //     flyWheel.timed(1.0);
+        // }
 
         // as long as the trigger is pushed keep firing
-        if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER))
-        {
-            ballShooter.manualShoot();
-        }
-        else
-        {
-            ballShooter.manualStop();
-        }
+        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER))
+        // {
+        //     ballShooter.manualShoot();
+        // }
+        // else
+        // {
+        //     ballShooter.manualStop();
+        // }
 
         // !!!SID!!! - this will probably need more than this
         //             for the climber
