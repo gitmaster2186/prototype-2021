@@ -20,9 +20,26 @@ public class Intake {
         neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
         neo550ShooterRearIntake  = inNeo550ShooterRearIntake;
         neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
-
         neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();
+
+        // !!!SID!!! XXX - 3/2/22 - temp enable this limiter - start
+        neo550ShooterFrontIntake.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        neo550ShooterFrontIntake.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        // gear ratios -- 28:1, 12.5
+        neo550ShooterFrontIntake.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 1);
+        neo550ShooterFrontIntake.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 1);
+
+        neo550ShooterFrontIntake.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+        neo550ShooterFrontIntakeEncoder  = neo550ShooterFrontIntake.getEncoder(); 
+        neo550ShooterFrontIntakeEncoder.setPosition(0);
+
+        // !!!SID!!! XXX - 3/2/22 - temp enable this limiter - end
+        
+        SmartDashboard.putNumber("FrontIntake position",
+                                 neo550ShooterFrontIntakeEncoder.getPosition());
 
         intakeFilter.reset(0.25);
     }
@@ -43,6 +60,7 @@ public class Intake {
         if (calledCount == 1)
         {
             intakeFilter.reset(0.25);
+            neo550ShooterFrontIntakeEncoder.setPosition(0);
         }
 
         if (toggleOn == true)
@@ -63,6 +81,8 @@ public class Intake {
                                  fltSpeed);
         SmartDashboard.putNumber("FrontIntake Velocity", 
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
+        SmartDashboard.putNumber("FrontIntake position",
+                                 neo550ShooterFrontIntakeEncoder.getPosition());
     }   
 
 }

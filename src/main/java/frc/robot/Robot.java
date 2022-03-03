@@ -23,12 +23,14 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.WPILibVersion;
 import frc.robot.subsystems.FlyWheel;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
@@ -104,6 +106,8 @@ public class Robot extends TimedRobot
     // !!!SID!!! - XXX - TBD
     private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
     int intakeCount = 0;
+    boolean ledsOn = false;
+
     @Override
     public void robotInit()
     {
@@ -117,7 +121,9 @@ public class Robot extends TimedRobot
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
         ahrs.reset();
-        int x = WPILibVersion.Version;
+        String wpiVerStr = WPILibVersion.Version;
+        System.out.println("WPI version " + wpiVerStr);
+        CameraServer.startAutomaticCapture();
 
     }
 
@@ -162,15 +168,19 @@ public class Robot extends TimedRobot
          * !!!SID!!! - review each of these. Do we want to call
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
          */
-        if (altJoystick.getRawButton(Constants.LIMELIGHT_LEDS_BUTTON))
+        if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
         {
-            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+            if (ledsOn == false)
+            {
+                limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+                ledsOn = true;
+            }
+            else
+            {
+                limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds on
+                ledsOn = false;
+            }
         }
-        else if (altJoystick.getRawButtonReleased(Constants.LIMELIGHT_LEDS_BUTTON))
-        {
-            limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds on
-        }
-
 
         // !!!SID!!! - Should we change the turret to use the joystick y axis?
         if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT))

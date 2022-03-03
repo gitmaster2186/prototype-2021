@@ -18,6 +18,12 @@ public class Turret {
         neo550ShooterTurret = inNeo550ShooterTurret;
 
         neo550ShooterTurret.restoreFactoryDefaults();
+
+        neo550ShooterTurret.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        neo550ShooterTurret.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        neo550ShooterTurret.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 2);
+        neo550ShooterTurret.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 2);
     }
 
     public void rotate(double speed)
