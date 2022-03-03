@@ -42,6 +42,8 @@ import frc.robot.utils.TankSpeeds;
 
 import edu.wpi.first.wpilibj.SPI;
 
+
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -50,6 +52,7 @@ import edu.wpi.first.wpilibj.SPI;
  */
 public class Robot extends TimedRobot 
 {
+
 
     public TankSpeeds getManualTankSpeed()
     {
@@ -105,6 +108,10 @@ public class Robot extends TimedRobot
                                                               neo550ShooterLoaderRollerBack);
     // !!!SID!!! - XXX - TBD
     private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
+
+    private AutonomousMode autoMode;
+
+
     int intakeCount = 0;
     boolean ledsOn = false;
 
@@ -123,10 +130,27 @@ public class Robot extends TimedRobot
         ahrs.reset();
         String wpiVerStr = WPILibVersion.Version;
         System.out.println("WPI version " + wpiVerStr);
-        CameraServer.startAutomaticCapture();
 
+        // turn the camera on
+        CameraServer.startAutomaticCapture();
     }
 
+
+    @Override
+  /**
+   * This function is called once at the start of autonomous.
+   */
+  public void autonomousInit() {
+        autoMode = new AutonomousMode(driveTrain, ballShooter);
+    }
+
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+    autoMode.autoModePeriodic();
+  }
 
     @Override
     public void teleopInit() 
@@ -157,7 +181,6 @@ public class Robot extends TimedRobot
         boolean driverAssistMode;
         TankSpeeds tankSpeed = getManualTankSpeed(); // get speed values from joysticks
 
-        double angle = ahrs.getAngle();
         SmartDashboard.putBoolean(  "IMU_Connected",        ahrs.isConnected());
         SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
         SmartDashboard.putNumber(   "IMU_Yaw",              ahrs.getYaw());

@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.Timer;
+//import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -11,17 +11,17 @@ public class FlyWheel {
     private WPI_TalonFX falcon500ShooterFlyWheel1;
     private WPI_TalonFX falcon500ShooterFlyWheel2;
     
-    private double startTime = 0;
+    // private double startTime = 0;
+    // private int startballShootTimedCounter = 0;
+    // private int stopballShootTimedCounter = 0;
     private boolean shooterActive = false;
-    private int startballShootTimedCounter = 0;
-    private int stopballShootTimedCounter = 0;
     private int startFireBallCounter = 0;
     private int stopFireBallCounter = 0;
     private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
     private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
                                       
     public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheel1,
-                       WPI_TalonFX inFalcon500ShooterFlyWheel2)
+                    WPI_TalonFX inFalcon500ShooterFlyWheel2)
                    
     {
         falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
@@ -39,33 +39,33 @@ public class FlyWheel {
      * 
      * objects used: 
      */
-    public void timed(double fireTurrentTimeSeconds)
-    {
-        // are we starting a new shot?
-        if (shooterActive == false)
-        {
-            startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
-            toggle(true);
-            startballShootTimedCounter += 1;
-            SmartDashboard.putNumber("startballShootTimedCounter", startballShootTimedCounter);
-        }
-        else
-        {
-            double nowTime = Timer.getFPGATimestamp();
+    // public void timed(double fireTurrentTimeSeconds)
+    // {
+    //     // are we starting a new shot?
+    //     if (shooterActive == false)
+    //     {
+    //         startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
+    //         toggle(true);
+    //         startballShootTimedCounter += 1;
+    //         SmartDashboard.putNumber("startballShootTimedCounter", startballShootTimedCounter);
+    //     }
+    //     else
+    //     {
+    //         double nowTime = Timer.getFPGATimestamp();
 
-            // are we done (timer expired)?
-            if ((nowTime - startTime) >= fireTurrentTimeSeconds)
-            {
-                toggle(false);
+    //         // are we done (timer expired)?
+    //         if ((nowTime - startTime) >= fireTurrentTimeSeconds)
+    //         {
+    //             toggle(false);
 
-                stopballShootTimedCounter += 1;
-                SmartDashboard.putNumber("stopballShootTimedCounter", stopballShootTimedCounter);
-            }
-        }
-    }
+    //             stopballShootTimedCounter += 1;
+    //             SmartDashboard.putNumber("stopballShootTimedCounter", stopballShootTimedCounter);
+    //         }
+    //     }
+    // }
 
     /*
-     * toggle the ball shooter on/off
+     * toggle the ball shooter flywheels on/off
      * 
      * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
      */

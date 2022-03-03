@@ -13,9 +13,15 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.utils.OurTimer;
 import frc.robot.utils.TankSpeeds;
 
 public class DriveTrain {
+
+    // !!!SID!!! XXX - TBD - tune distance and steering limits
+    private static final double TARGET_DISTANCE_LIMIT = 1.0;
+    private static final double TARGET_STEERING_LIMIT = 1.0;
+
     private CANSparkMax neoDriveTrainFrontLeft;
     private CANSparkMax neoDriveTrainFrontRight;
     private CANSparkMax neoDriveTrainRearLeft;
@@ -33,6 +39,7 @@ public class DriveTrain {
     private SlewRateLimiter rightDtfilter;
     private NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private NetworkTable limeLightTable = inst.getTable("limelight");
+    private OurTimer dtTimer;
 
     public DriveTrain(CANSparkMax inNeoDriveTrainFrontLeft,
                       CANSparkMax inNeoDriveTrainFrontRight,
@@ -71,6 +78,7 @@ public class DriveTrain {
                                       neoDriveTrainFrontRight);                              
         leftDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
         rightDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
+        dtTimer = new OurTimer();
 
     }
 
@@ -104,11 +112,12 @@ public class DriveTrain {
         PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
     
     // Vision-alignment mode
-    private void aimAssist(TankSpeeds tankSpeed)
+    public boolean aimAssist(TankSpeeds tankSpeed)
     {
         double x = 0.0;
         double y = 0.0;
         double area = 0.0;
+        boolean gotTarget = false;
 
         System.out.println("assist mode");
 
@@ -155,7 +164,14 @@ public class DriveTrain {
             }
     
             double distance_adjust = KpDistance * distance_error;
-    
+            
+            // are we close enough to the target?
+            if ((Math.abs(distance_adjust) < TARGET_DISTANCE_LIMIT) && 
+                (Math.abs(steering_adjust) < TARGET_STEERING_LIMIT)) 
+            {
+                gotTarget = true;
+            }
+
             tankSpeed.leftSpeed  += (steering_adjust + distance_adjust);
             tankSpeed.rightSpeed -= (steering_adjust + distance_adjust);
         }
@@ -165,6 +181,37 @@ public class DriveTrain {
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
         SmartDashboard.putNumber("LimelightTargets", tankSpeed.targets);
+
+        return (gotTarget);
+    }
+
+    // move a specified distance.
+    // return true if done or false if not done traveling.
+    public boolean distanceMove(double distance)
+    {
+        TankSpeeds ts = new TankSpeeds(0.5, 0.5);
+        tankDrive(ts, false);
+        return false;
+    }
+
+    public void timerInit()
+    {
+        dtTimer.initTimer();
+    }
+
+    // drive
+    // return timer expired state
+    public boolean timedMove(double time, double speeds)
+    {
+        boolean ret = true;
+
+        if (dtTimer.timerTest(time) == false)
+        {
+            TankSpeeds ts = new TankSpeeds(speeds, speeds);
+            tankDrive(ts, false);
+            ret = false;
+        }
+        return ret;
     }
 
     public void tankDrive(TankSpeeds tankSpeed, boolean driverAssistMode)

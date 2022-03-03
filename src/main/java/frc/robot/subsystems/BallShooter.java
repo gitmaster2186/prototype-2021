@@ -14,6 +14,8 @@ public class BallShooter {
     loaderRollers = inLoaderRollers;
     flyWheel = inFlyWheel;
     driveTrain = inDriveTrain;
+    // setting this to 1 because we start with 1 loaded for autonomous mode
+    loaderRollers.setBallCount(1);
    } 
    
    public void manualStop()
@@ -23,19 +25,23 @@ public class BallShooter {
        // !!!SID!!! XXX - do we have to stop the flywheel also?
    }
 
-   public void manualShoot()
+   public boolean manualShoot()
    {
-    //    // is there a ball is loadable position?
-    //     if (loaderRollers.ballLoaded())
-    //     {
-    //        // yes. are the flywheels up to speed?
-    //         if (flyWheel.upToSpeed())
-    //         {
-    //            // yes. send the ball up to the flywheels
-    //            loaderRollers.toggle(true);
-    //         }
-    //     }
+       boolean ballShot = true;
+       // is there a ball is loadable position?
+        if (loaderRollers.ballLoaded())
+        {
+            // set flywheel speed
+            flyWheel.toggle(true);
 
+            // yes. are the flywheels up to speed?
+            if (flyWheel.upToSpeed())
+            {
+               // yes. send the ball up to the flywheels
+               loaderRollers.toggle(true);
+            }
+        }
+        return ballShot;
    }
 
    public void autoShoot(TankSpeeds tankSpeed)

@@ -15,6 +15,7 @@ public class LoaderRollers {
     //private RelativeEncoder neo550ShooterLoaderRollerEncoder;
     private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
     int dbgCount = 0;
+    int ballCount = 0;
     // private boolean leftLimitSwitchTrippedValue = false;
     // private boolean rightLimitSwitchTrippedValue = false;
     // private DigitalInput leftLimitSwitch = new DigitalInput(Constants.DIOleftLimitSwitch);
@@ -33,11 +34,14 @@ public class LoaderRollers {
 
         // neo550 motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev.
         // neo550ShooterLoaderRollerEncoder  = neo550ShooterLoaderRollerFront.getEncoder();   
+
     }
+
     /*
      * toggle the loader rollers on/off
      * run while button is pushed to load ball into firing position
      * do not load ball if flywheels are not up to speed 
+     * update but ignore the ball count.
      * 
      * objects used: falcon500ShooterFlyWheel1, 
      *               falcon500ShooterFlyWheel2,
@@ -63,6 +67,9 @@ public class LoaderRollers {
         neo550ShooterLoaderRollerFront.set(fltSpeed);
         neo550ShooterLoaderRollerBack.set(fltSpeed);
 
+        // add -1 to ballCount
+        incBallCount(-1);
+
         SmartDashboard.putNumber("FrontLoader speed", 
                                  speed);
     }   
@@ -86,9 +93,24 @@ public class LoaderRollers {
     //     SmartDashboard.putNumber("LoadRoller Velocity", 
     //                              neo550ShooterLoaderRollerEncoder.getVelocity());
     // }
+    public void setBallCount(int count)
+    {
+        ballCount = count;
+    }
 
-    public boolean ballLoaded() {
-        return true;
+    public void incBallCount(int count)
+    {
+        ballCount += count;
+    }
+
+    public boolean ballLoaded() 
+    {
+        boolean ret = false;
+        if (ballCount > 0)
+        {
+            ret = true;
+        }
+        return ret;
     }
 
 }
