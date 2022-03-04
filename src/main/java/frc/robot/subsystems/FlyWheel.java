@@ -14,7 +14,7 @@ public class FlyWheel {
     // private double startTime = 0;
     // private int startballShootTimedCounter = 0;
     // private int stopballShootTimedCounter = 0;
-    private boolean shooterActive = false;
+    // private boolean shooterActive = false;
     private int startFireBallCounter = 0;
     private int stopFireBallCounter = 0;
     private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
@@ -76,14 +76,14 @@ public class FlyWheel {
         double xr = 0.0;
         if (buttonPressed == false)
         {
-            shooterActive = false;
+            // shooterActive = false;
             stopFireBallCounter += 1;
             SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
         }
         else
         {
             speed = Constants.FLYWHEEL_ON;
-            shooterActive = true;
+            // shooterActive = true;
             startFireBallCounter += 1;
             xl = leftFlyfilter.calculate(speed);
             xr = rightFlyfilter.calculate(speed);
@@ -108,8 +108,8 @@ public class FlyWheel {
         boolean ret = false;
         double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
         double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        if ((flyVel1 >= Constants.MIN_FLYWHEEL_VEL) &&
-            (flyVel2 >= Constants.MIN_FLYWHEEL_VEL))
+        if ((flyVel1 >= Constants.FLYWHEEL_MIN_VEL) &&
+            (flyVel2 >= Constants.FLYWHEEL_MIN_VEL))
         {
             ret = true;
         }

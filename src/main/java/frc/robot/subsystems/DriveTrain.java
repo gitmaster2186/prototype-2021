@@ -199,16 +199,21 @@ public class DriveTrain {
         dtTimer.initTimer();
     }
 
-    // drive
+    // drive for the specified time the specified speed
     // return timer expired state
     public boolean timedMove(double time, double speeds)
     {
         boolean ret = true;
 
+        // has the timer expired?
         if (dtTimer.timerTest(time) == false)
         {
             TankSpeeds ts = new TankSpeeds(speeds, speeds);
+            
+            // go straight forward/backward
             tankDrive(ts, false);
+
+            // return false because we're still running
             ret = false;
         }
         return ret;
@@ -223,6 +228,7 @@ public class DriveTrain {
         {
             limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
 
+            // we're intentionally ignoring the return value
             aimAssist(tankSpeed);
             xl = tankSpeed.leftSpeed;
             xr = tankSpeed.rightSpeed;
@@ -232,6 +238,7 @@ public class DriveTrain {
             // if we're not aiming the turret then make sure the LEDs are off
             //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
 
+            // do ramp-up up/down
             xl = leftDtfilter.calculate(tankSpeed.leftSpeed);
             xr = rightDtfilter.calculate(tankSpeed.rightSpeed);
         }
@@ -247,5 +254,4 @@ public class DriveTrain {
 
         drive.tankDrive(xl, xr);
     }
-
 }

@@ -33,11 +33,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import frc.robot.subsystems.FlyWheel;
 import frc.robot.subsystems.BallShooter;
-import frc.robot.subsystems.Climber;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LoaderRollers;
-import frc.robot.subsystems.Turret;
+//import frc.robot.subsystems.Turret;
 import frc.robot.utils.TankSpeeds;
 
 import edu.wpi.first.wpilibj.SPI;
@@ -66,39 +66,39 @@ public class Robot extends TimedRobot
     NetworkTable limeLightTable = inst.getTable("limelight");
     
 
-    Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_USB_PORT);
-    Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_USB_PORT);
+    Joystick leftJoystick = new Joystick(Constants.DRIVER_LEFT_JOYSTICK_USB_PORT);
+    Joystick rightJoystick = new Joystick(Constants.DRIVER_RIGHT_JOYSTICK_USB_PORT);
     Joystick altJoystick = new Joystick(Constants.ALT_JOYSTICK_USB_PORT);
     
     // XboxController xboxController = new XboxController(Constants.DRIVER_XBOX_CONTROLLER);
 
     // Drive motors
-    private CANSparkMax neoDriveTrainFrontLeft    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainFrontRight   = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainRearLeft     = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_3_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neoDriveTrainRearRight    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_4_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainFrontLeft    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_FRONT_LEFT_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainFrontRight   = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_FRONT_RIGHT_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainRearLeft     = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_BACK_LEFT_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neoDriveTrainRearRight    = new CANSparkMax(Constants.SPARK_NEO_DRIVETRAIN_BACK_RIGHT_CAN_ID, MotorType.kBrushless);
     DriveTrain driveTrain  = new DriveTrain(neoDriveTrainFrontLeft,
                                             neoDriveTrainFrontRight,
                                             neoDriveTrainRearLeft,
                                             neoDriveTrainRearRight);
 
-    private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_INTAKE_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoaderRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_LOADER_1_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterLoaderRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_LOADER_2_CAN_ID, MotorType.kBrushless);
-    private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_INTAKE_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_BACK_INTAKE_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoaderRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_LOADER_CAN_ID, MotorType.kBrushless);
+    private CANSparkMax neo550ShooterLoaderRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_BACK_LOADER_CAN_ID, MotorType.kBrushless);
+    // private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
-    private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_1_CAN_ID);
-    private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_SHOOTER_2_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
   
-    private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_1_CAN_ID);
-    private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_CLIMBER_2_CAN_ID);
+    // private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_LEFT_CLIMBER_CAN_ID);
+    // private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_RIGHT_CLIMBER_CAN_ID);
   
     private Intake intake = new Intake(neo550ShooterFrontIntake, 
                                        neo550ShooterRearIntake); 
-    private Turret turret = new Turret(neo550ShooterTurret);
-    private Climber climber = new Climber(falcon500Climber1,
-                                          falcon500Climber2);
+    // private Turret turret = new Turret(neo550ShooterTurret);
+    // private Climber climber = new Climber(falcon500Climber1,
+    //                                       falcon500Climber2);
 
 
     private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot
     private AutonomousMode autoMode;
 
 
-    int intakeCount = 0;
+    int intakeOnCount = 0;
     boolean ledsOn = false;
 
     @Override
@@ -131,7 +131,10 @@ public class Robot extends TimedRobot
         String wpiVerStr = WPILibVersion.Version;
         System.out.println("WPI version " + wpiVerStr);
 
-        // turn the camera on
+        // limelight leds off
+        limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
+
+        // turn the driver camera on
         CameraServer.startAutomaticCapture();
     }
 
@@ -142,10 +145,10 @@ public class Robot extends TimedRobot
    */
   public void autonomousInit() {
         autoMode = new AutonomousMode(driveTrain, ballShooter);
-    }
+  }
 
   /**
-   * This function is called periodically during autonomous.
+   * This function is called periodically (50/sec) during autonomous.
    */
   @Override
   public void autonomousPeriodic() {
@@ -168,30 +171,25 @@ public class Robot extends TimedRobot
 */
 
 
-
-    // not sure what this is
-    // private void Deployintake()
-    // {
-    //     System.out.println("DeployIntake");
-    // }
-
     @Override
     // gets called 50 times a second
     public void teleopPeriodic() {
         boolean driverAssistMode;
-        TankSpeeds tankSpeed = getManualTankSpeed(); // get speed values from joysticks
+        
+        /*
+         * get speed values from joysticks
+         * get them now because some cmds/buttons will modify the
+         * speed input from the joysticks
+         */
+        TankSpeeds tankSpeed = getManualTankSpeed(); 
 
-        SmartDashboard.putBoolean(  "IMU_Connected",        ahrs.isConnected());
-        SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
-        SmartDashboard.putNumber(   "IMU_Yaw",              ahrs.getYaw());
-        SmartDashboard.putNumber(   "IMU_Pitch",            ahrs.getPitch());
-        SmartDashboard.putNumber(   "IMU_Roll",             ahrs.getRoll());        
-        SmartDashboard.putNumber(   "IMU_Angle",            ahrs.getAngle());
         /* 
-         * !!!SID!!! - review each of these. Do we want to call
+         * !!!SID!!! XXX - review each of these. Do we want to call
          * getRawButton, getRawButtonPressed or getRawButtonReleased?
          */
-        if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
+
+         // toggle limelight leds on/off
+         if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
         {
             if (ledsOn == false)
             {
@@ -205,92 +203,43 @@ public class Robot extends TimedRobot
             }
         }
 
-        // !!!SID!!! - Should we change the turret to use the joystick y axis?
-        if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT))
+        // toggle intake motors on/off
+        if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE_BUTTON))
         {
-            turret.rotate(-Constants.TURRET_ON);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT))
-        {
-            turret.rotate(Constants.TURRET_OFF);
-        }
-
-        if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT))
-        {
-            turret.rotate(Constants.TURRET_ON);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT))
-        {
-            turret.rotate(Constants.TURRET_OFF);
-        }
-
-        // tested - working
-        if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE))
-        {
-            intakeCount += 1;
+            intakeOnCount += 1;
             intake.toggle(true); 
         }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE))
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE_BUTTON))
         {
             intake.toggle(false);
         }
-        SmartDashboard.putNumber("intakeCount", intakeCount);
 
-        if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS))
+        // toggle loader motors on/off
+        if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
         {
-            System.out.println("LON");
             loaderRollers.toggle(true);
         }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS))
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
         {
-            System.out.println("LOFF");
             loaderRollers.toggle(false);
         }
 
-        if (altJoystick.getRawButton(Constants.TOGGLE_FLYWHEELS))
+        // toggle flywheel motors on/off
+        if (altJoystick.getRawButton(Constants.TOGGLE_FLYWHEELS_BUTTON))
         {
             flyWheel.toggle(true);
         }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_FLYWHEELS))
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_FLYWHEELS_BUTTON))
         {
             flyWheel.toggle(false);
         }
 
-        // returns true if the button is being held down
-        // at the time that this method is being called
-        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_TIMED))
-        // {
-        //     // activate the shooter for 1 second
-        //     flyWheel.timed(1.0);
-        // }
-
-        // as long as the trigger is pushed keep firing
-        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER))
-        // {
-        //     ballShooter.manualShoot();
-        // }
-        // else
-        // {
-        //     ballShooter.manualStop();
-        // }
-
-        // !!!SID!!! - this will probably need more than this
-        //             for the climber
-        if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER))
-        {
-            climber.toggle(true);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER))
-        {
-            climber.toggle(false);
-        }
-
-
-        // if(altJoystick.getRawButton(Constants.DEPLOY_INTAKE)){
-        //     Deployintake();
-        // }
-
-
+        /* 
+         * toggle aim assist mode on/off
+         * This will be input to our tankDrive method
+         * to determine if ew're using vision to position
+         * the robot.
+         */
         if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) 
         {
             driverAssistMode = true;
@@ -309,11 +258,74 @@ public class Robot extends TimedRobot
                                 " driverAssist: " +
                                 driverAssistMode);
         }
+
+        SmartDashboard.putBoolean("IMU_Connected",        ahrs.isConnected());
+        SmartDashboard.putBoolean("IMU_IsCalibrating",    ahrs.isCalibrating());
+        SmartDashboard.putNumber("IMU_Yaw",              ahrs.getYaw());
+        SmartDashboard.putNumber("IMU_Pitch",            ahrs.getPitch());
+        SmartDashboard.putNumber("IMU_Roll",             ahrs.getRoll());        
+        SmartDashboard.putNumber("IMU_Angle",            ahrs.getAngle());
+
         SmartDashboard.putNumber("leftSpeed", tankSpeed.leftSpeed);
         SmartDashboard.putNumber("rightSpeed", tankSpeed.rightSpeed);
         SmartDashboard.putBoolean("driverAssistMode", driverAssistMode);
+        SmartDashboard.putNumber("intakeOnCount", intakeOnCount);
 
-        // move the robot
+
+        /*
+         * don't delete this commented-out code yet.
+         * we may use this once the other sw/hw is verified.
+         */
+
+        // !!!SID!!! - Should we change the turret to use the joystick y axis?
+        // if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT_BUTTON))
+        // {
+        //     turret.rotate(-Constants.TURRET_ON);
+        // }
+        // else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_RIGHT_BUTTON))
+        // {
+        //     turret.rotate(Constants.TURRET_OFF);
+        // }
+        // if (altJoystick.getRawButton(Constants.TURN_TURRET_LEFT_BUTTON))
+        // {
+        //     turret.rotate(Constants.TURRET_ON);
+        // }
+        // else if (altJoystick.getRawButtonReleased(Constants.TURN_TURRET_LEFT_BUTTON))
+        // {
+        //     turret.rotate(Constants.TURRET_OFF);
+        // }
+
+
+        // returns true if the button is being held down
+        // at the time that this method is being called
+        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_TIMED_BUTTON))
+        // {
+        //     // activate the shooter for 1 second
+        //     flyWheel.timed(1.0);
+        // }
+
+        // as long as the trigger is pushed keep firing
+        // if(altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_BUTTON))
+        // {
+        //     ballShooter.manualShoot();
+        // }
+        // else
+        // {
+        //     ballShooter.manualStop();
+        // }
+
+        // !!!SID!!! - this will probably need more than this
+        //             for the climber
+        // if (altJoystick.getRawButtonPressed(Constants.TOGGLE_CLIMBER_BUTTON))
+        // {
+        //     climber.toggle(true);
+        // }
+        // else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_CLIMBER_BUTTON))
+        // {
+        //     climber.toggle(false);
+        // }
+
+        // move the robot -- our driveTrain object
         driveTrain.tankDrive(tankSpeed, driverAssistMode);
     }
 }

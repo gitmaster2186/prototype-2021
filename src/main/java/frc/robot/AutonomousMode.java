@@ -1,6 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Timer;
+//import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
@@ -24,7 +24,7 @@ public class AutonomousMode {
 
     // !!!SID!!! XXX - these values must be tuned!!!
     private static final double AUTO_MOVE_TIME = 2.0;
-    private static final double AUTO_MOVE_DISTANCE = 2.0;
+    //private static final double AUTO_MOVE_DISTANCE = 2.0;
     private static final double AUTO_AIM_TIME = 2.0;
     private static final double AUTO_SHOOT_TIME = 2.0;
     private static final double AUTO_MOVE_SPEED = 0.5;
@@ -37,23 +37,6 @@ public class AutonomousMode {
         shooter = inShooter;
         stateTimer = new OurTimer();
     }
-
-    // private boolean timerTest(double maxTime)
-    // {                
-    //     boolean timerExpired = false;
-    //     double currentTime;
-    //     currentTime = Timer.getFPGATimestamp(); // get sys time in seconds
-    //     if ((currentTime - startTime) > maxTime)
-    //     {
-    //         timerExpired = true;
-    //     }
-    //     return timerExpired;
-    // }   
-
-    // private void ourTimerInit()
-    // {
-    //     startTime = Timer.getFPGATimestamp(); // get sys time in seconds
-    // }
 
     private void nextState(String stateString, 
                            AutonomousStateEnum nextState, 
