@@ -29,8 +29,74 @@ public class FlyWheel {
 
         falcon500ShooterFlyWheel1.configFactoryDefault();
         falcon500ShooterFlyWheel2.configFactoryDefault();
+
+        falcon500ShooterFlyWheel1.setInverted(true);
+        falcon500ShooterFlyWheel2.setInverted(true);        
     }
 
+
+
+    /*
+     * toggle the ball shooter flywheels on/off
+     * 
+     * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
+     */
+    public void toggle(boolean buttonPressed)
+    {
+        double speed;
+        double xl = 0.0;
+        double xr = 0.0;
+        if (buttonPressed == false)
+        {
+            // shooterActive = false;
+            stopFireBallCounter += 1;
+            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
+        }
+        else
+        {
+            speed = Constants.FLYWHEEL_ON;
+            // shooterActive = true;
+            startFireBallCounter += 1;
+
+            // !!!SID!!! XXX - reenabled the ramp filters?
+            //xl = leftFlyfilter.calculate(speed);
+            // xr = rightFlyfilter.calculate(speed);
+
+            xl = speed;
+            xr = speed;
+            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
+        }
+
+        // set the left flywheel speed
+        falcon500ShooterFlyWheel1.set(xl);
+        // set the right flywheel speed
+        falcon500ShooterFlyWheel2.set(xr);
+
+        // measure the velocity of each flywheel and display the data
+        // on the dashboard for debug.
+        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyW1vel", vel1);
+
+        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        SmartDashboard.putNumber("flyW2vel", vel2);
+
+    }
+
+    // return true if the flywheels are up to speed otherwise false.
+    public boolean upToSpeed() 
+    {
+        boolean ret = false;
+        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
+        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        if ((flyVel1 >= Constants.FLYWHEEL_MIN_VEL) &&
+            (flyVel2 >= Constants.FLYWHEEL_MIN_VEL))
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+    
 
     // !!!SID!!! - this ain't right!!!
 
@@ -64,57 +130,4 @@ public class FlyWheel {
     //     }
     // }
 
-    /*
-     * toggle the ball shooter flywheels on/off
-     * 
-     * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
-     */
-    public void toggle(boolean buttonPressed)
-    {
-        double speed;
-        double xl = 0.0;
-        double xr = 0.0;
-        if (buttonPressed == false)
-        {
-            // shooterActive = false;
-            stopFireBallCounter += 1;
-            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
-        }
-        else
-        {
-            speed = Constants.FLYWHEEL_ON;
-            // shooterActive = true;
-            startFireBallCounter += 1;
-            xl = leftFlyfilter.calculate(speed);
-            xr = rightFlyfilter.calculate(speed);
-            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
-        }
-
-        falcon500ShooterFlyWheel1.set(xl);
-
-        // primary closed loop 
-        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 1 velocity", vel1);
-
-        falcon500ShooterFlyWheel2.set(xr);
-        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyWheel 2 velocity", vel2);
-
-    }
-
-
-    public boolean upToSpeed() 
-    {
-        boolean ret = false;
-        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        if ((flyVel1 >= Constants.FLYWHEEL_MIN_VEL) &&
-            (flyVel2 >= Constants.FLYWHEEL_MIN_VEL))
-        {
-            ret = true;
-        }
-
-        return ret;
-    }
-    
 }

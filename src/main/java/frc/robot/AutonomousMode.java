@@ -65,7 +65,7 @@ public class AutonomousMode {
         switch(autonomousStateVar)
         {
             case AUTO_STATE_INIT:
-                // immediately move to the MOVE state
+                // immediately transition to the MOVE state
                 nextState("Move", AutonomousStateEnum.AUTO_STATE_MOVE, true);
                 break;
             
@@ -89,7 +89,7 @@ public class AutonomousMode {
                 break;
     
             case AUTO_STATE_AIM:
-                // get into shooting position but don't do it forever...
+                // use vision to get into shooting position but don't do it forever...
                 TankSpeeds ts = new TankSpeeds(0, 0);
                 if ((driveTrain.aimAssist(ts)  == true) ||
                     (stateTimer.timerTest(AUTO_AIM_TIME)  == true))
@@ -101,7 +101,7 @@ public class AutonomousMode {
             case AUTO_STATE_SHOOT:
                 // try to shoot the ball
                 if ((shooter.manualShoot() == true) ||
-                    (stateTimer.timerTest(AUTO_SHOOT_TIME)  == true))
+                    (stateTimer.timerTest(AUTO_SHOOT_TIME) == true))
                 {
                     nextState("Wait", AutonomousStateEnum.AUTO_STATE_WAIT, false);
                 }

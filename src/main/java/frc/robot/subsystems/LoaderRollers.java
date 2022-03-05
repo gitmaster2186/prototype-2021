@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 // import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DigitalInput;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -18,8 +19,6 @@ public class LoaderRollers {
     int ballCount = 0;
     // private boolean leftLimitSwitchTrippedValue = false;
     // private boolean rightLimitSwitchTrippedValue = false;
-    // private DigitalInput leftLimitSwitch = new DigitalInput(Constants.DIOleftLimitSwitch);
-    // private DigitalInput rightLimitSwitch = new DigitalInput(Constants.DIOrightLimitSwitch);
   
     public LoaderRollers(CANSparkMax inneo550ShooterLoaderRollerFront,
                          CANSparkMax inneo550ShooterLoaderRollerBack)
@@ -47,9 +46,7 @@ public class LoaderRollers {
      *               falcon500ShooterFlyWheel2,
      *               neo550ShooterLoaderRoller,
      *               neo550ShooterLoaderRollerEncoder
-     * 
-    
-    
+     *     
      */
     
     public void toggle(boolean toggleOn)

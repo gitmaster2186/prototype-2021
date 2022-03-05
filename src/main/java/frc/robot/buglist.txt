@@ -1,8 +1,20 @@
 this is the open bug list
-- enable usb camera
-    - just call startAutomaticCapture from robotInit.
-- disable the timed shooter button
-- write autonomous mode
+- tune all tunable constants
+    MIN_FLYWHEEL_VEL
+        Constants.java
+    AUTO_MOVE_TIME
+        AutonomousMode.java
+    AUTO_MOVE_DISTANCE
+    AUTO_MOVE_SPEED
+    AUTO_AIM_TIME
+    AUTO_SHOOT_TIME
+    TARGET_DISTANCE_LIMIT
+    TARGET_STEERING_LIMIT
+    KpAim
+    min_aim_command
+    KpDistance
+    LOADER_SPEED_ON
+- debug autonomous mode
     - drive off tarmac
     - shoot preloaded ball
     - wait for teleop mode
@@ -12,7 +24,6 @@ this is the open bug list
     - roborio
     - robot code
     - ???
-- disable turret buttons after inital test?
 - should the driver assist button be moved from the aux joystick to one of the driver joysticks?
 - ???
 

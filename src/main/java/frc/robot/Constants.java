@@ -53,18 +53,24 @@ public class Constants {
      */
 
     // drivetrain
-    public static final int SPARK_NEO_DRIVETRAIN_FRONT_LEFT_CAN_ID  = 3;
-    public static final int SPARK_NEO_DRIVETRAIN_FRONT_RIGHT_CAN_ID = 5;
-    public static final int SPARK_NEO_DRIVETRAIN_BACK_LEFT_CAN_ID   = 2;
-    public static final int SPARK_NEO_DRIVETRAIN_BACK_RIGHT_CAN_ID  = 7;
 
+    // !!!SID!!! XXX - debug - comment out to troubleshoot gearbox problem
+    // public static final int SPARK_NEO_DRIVETRAIN_FRONT_LEFT_CAN_ID  = 3;
+    // public static final int SPARK_NEO_DRIVETRAIN_FRONT_RIGHT_CAN_ID = 5;
+    // public static final int SPARK_NEO_DRIVETRAIN_BACK_LEFT_CAN_ID   = 2;
+    // public static final int SPARK_NEO_DRIVETRAIN_BACK_RIGHT_CAN_ID  = 7;
+
+    public static final int SPARK_NEO_DRIVETRAIN_FRONT_LEFT_CAN_ID  = 3;
+    public static final int SPARK_NEO_DRIVETRAIN_FRONT_RIGHT_CAN_ID = 2;
+    public static final int SPARK_NEO_DRIVETRAIN_BACK_LEFT_CAN_ID   = 7;
+    public static final int SPARK_NEO_DRIVETRAIN_BACK_RIGHT_CAN_ID  = 5;
     // intakes
     public static final int SPARK_NEO550_FRONT_INTAKE_CAN_ID = 6;
     public static final int SPARK_NEO550_BACK_INTAKE_CAN_ID = 1;
 
     // loaders
-    public static final int SPARK_NEO550_FRONT_LOADER_CAN_ID = 9;
-    public static final int SPARK_NEO550_BACK_LOADER_CAN_ID = 10;
+    public static final int SPARK_NEO550_FRONT_LOADER_CAN_ID = 10;
+    public static final int SPARK_NEO550_BACK_LOADER_CAN_ID = 9;
 
     // flywheels
     public static final int FALCON500_FRONT_FLYWHEEL_CAN_ID = 5;
@@ -100,7 +106,7 @@ public class Constants {
 
     // speeds for flywheel motors
     public static final double FLYWHEEL_OFF = 0.0;
-    public static final double FLYWHEEL_ON = 0.5;
+    public static final double FLYWHEEL_ON = 0.75;
 
     // for flywheel up to speed test
     // !!!SID!!! XXX - change this to a real value.
@@ -115,6 +121,7 @@ public class Constants {
     public static final double TURRET_RAMP_UP_POWER = 0.75;
     public static final double INTAKE_RAMP_UP_POWER = 0.25;
     public static final double LOADER_RAMP_UP_POWER = 0.75;
+    public static final double INTAKE_FILTER_START_VALUE = 0.25;
 
     // roborio DIO assignments
     public static final int DIOleftLimitSwitch = 0;

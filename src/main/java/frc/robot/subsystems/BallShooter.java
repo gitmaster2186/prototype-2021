@@ -27,7 +27,7 @@ public class BallShooter {
 
    public boolean manualShoot()
    {
-       boolean ballShot = true;
+       boolean ballShot = false;
        // is there a ball is loadable position?
         if (loaderRollers.ballLoaded())
         {
@@ -39,6 +39,7 @@ public class BallShooter {
             {
                // yes. send the ball up to the flywheels
                loaderRollers.toggle(true);
+               ballShot = true;
             }
         }
         return ballShot;

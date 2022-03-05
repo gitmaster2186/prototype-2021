@@ -12,8 +12,10 @@ public class Intake {
     private CANSparkMax neo550ShooterRearIntake;
     private RelativeEncoder neo550ShooterFrontIntakeEncoder;   
 
-    private SlewRateLimiter intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
-    int calledCount = 0;
+    private SlewRateLimiter intakeFilter;
+    private int calledCount = 0;
+
+    // intake constructor
     public Intake(CANSparkMax inNeo550ShooterFrontIntake,
                   CANSparkMax inNeo550ShooterRearIntake)
     {
@@ -22,16 +24,16 @@ public class Intake {
         neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
         neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();
-
         
         SmartDashboard.putNumber("FrontIntake position",
                                  neo550ShooterFrontIntakeEncoder.getPosition());
 
-        intakeFilter.reset(0.25);
+        intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
+        intakeFilter.reset(Constants.INTAKE_FILTER_START_VALUE);
     }
 
     /*
-     * toggle the intakes on or off
+     * toggle the intake motors on/off
      * 
      * objects used: neo550ShooterFrontIntake, 
      *               neo550ShooterRearIntake, 
@@ -45,7 +47,7 @@ public class Intake {
         calledCount += 1;
         if (calledCount == 1)
         {
-            intakeFilter.reset(0.25);
+            intakeFilter.reset(Constants.INTAKE_FILTER_START_VALUE);
         }
 
         if (toggleOn == true)
@@ -54,12 +56,14 @@ public class Intake {
         }
         else
         {
-            // intakeFilter.reset(0.25);
             calledCount = 0;
         }
+
+        // set the speeds on both intakes
         neo550ShooterFrontIntake.set(fltSpeed);
         neo550ShooterRearIntake.set(fltSpeed);
 
+/*        
         SmartDashboard.putNumber("FrontIntake called", 
                                  calledCount);
         SmartDashboard.putNumber("FrontIntake speed", 
@@ -68,6 +72,6 @@ public class Intake {
                                  neo550ShooterFrontIntakeEncoder.getVelocity());
         SmartDashboard.putNumber("FrontIntake position",
                                  neo550ShooterFrontIntakeEncoder.getPosition());
+*/
     }   
-
 }

@@ -183,13 +183,8 @@ public class Robot extends TimedRobot
          */
         TankSpeeds tankSpeed = getManualTankSpeed(); 
 
-        /* 
-         * !!!SID!!! XXX - review each of these. Do we want to call
-         * getRawButton, getRawButtonPressed or getRawButtonReleased?
-         */
-
-         // toggle limelight leds on/off
-         if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
+        // toggle limelight leds on/off
+        if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
         {
             if (ledsOn == false)
             {
@@ -203,6 +198,13 @@ public class Robot extends TimedRobot
             }
         }
 
+        /*
+         * to manually shoot:
+         * 1. load ball
+         * 2. bring flywheels up to speed
+         * 3. activate loader to pass ball up to the flywheels
+         */
+
         // toggle intake motors on/off
         if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE_BUTTON))
         {
@@ -214,16 +216,6 @@ public class Robot extends TimedRobot
             intake.toggle(false);
         }
 
-        // toggle loader motors on/off
-        if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
-        {
-            loaderRollers.toggle(true);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
-        {
-            loaderRollers.toggle(false);
-        }
-
         // toggle flywheel motors on/off
         if (altJoystick.getRawButton(Constants.TOGGLE_FLYWHEELS_BUTTON))
         {
@@ -232,6 +224,16 @@ public class Robot extends TimedRobot
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_FLYWHEELS_BUTTON))
         {
             flyWheel.toggle(false);
+        }
+
+        // toggle loader motors on/off
+        if (altJoystick.getRawButton(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
+        {
+            loaderRollers.toggle(true);
+        }
+        else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_LOADER_ROLLERS_BUTTON))
+        {
+            loaderRollers.toggle(false);
         }
 
         /* 
@@ -259,6 +261,15 @@ public class Robot extends TimedRobot
                                 driverAssistMode);
         }
 
+        /*
+         * disabled: turret, flywheel.timed, 
+         *           ballShooter (automated shooter), climber, 
+         * 
+         * This commented-out code was moved to the bottom of the file.
+         * don't delete this commented-out code yet.
+         * we may use this once the other sw/hw is verified.
+         */
+
         SmartDashboard.putBoolean("IMU_Connected",        ahrs.isConnected());
         SmartDashboard.putBoolean("IMU_IsCalibrating",    ahrs.isCalibrating());
         SmartDashboard.putNumber("IMU_Yaw",              ahrs.getYaw());
@@ -271,11 +282,12 @@ public class Robot extends TimedRobot
         SmartDashboard.putBoolean("driverAssistMode", driverAssistMode);
         SmartDashboard.putNumber("intakeOnCount", intakeOnCount);
 
+        // move the robot -- our driveTrain object
+        driveTrain.tankDrive(tankSpeed, driverAssistMode);
+    }
+}
 
-        /*
-         * don't delete this commented-out code yet.
-         * we may use this once the other sw/hw is verified.
-         */
+
 
         // !!!SID!!! - Should we change the turret to use the joystick y axis?
         // if (altJoystick.getRawButton(Constants.TURN_TURRET_RIGHT_BUTTON))
@@ -325,7 +337,3 @@ public class Robot extends TimedRobot
         //     climber.toggle(false);
         // }
 
-        // move the robot -- our driveTrain object
-        driveTrain.tankDrive(tankSpeed, driverAssistMode);
-    }
-}
