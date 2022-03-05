@@ -69,6 +69,8 @@ public class DriveTrain {
         {
             System.out.println("Error set follow mode rear right");
         }
+        neoDriveTrainFrontRight.setInverted(true);
+        neoDriveTrainRearRight.setInverted(true);
 
         // NEO motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev
         neoDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
