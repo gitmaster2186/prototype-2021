@@ -11,7 +11,6 @@ public class Intake {
     private CANSparkMax neo550ShooterFrontIntake;
     private CANSparkMax neo550ShooterRearIntake;
     private RelativeEncoder neo550ShooterFrontIntakeEncoder;   
-
     private SlewRateLimiter intakeFilter;
     private int calledCount = 0;
 
@@ -21,7 +20,8 @@ public class Intake {
     {
         neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
         neo550ShooterRearIntake  = inNeo550ShooterRearIntake;
-        neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder();   
+        neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder(); 
+
         neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();
         
@@ -41,7 +41,7 @@ public class Intake {
      */
     public void toggle(boolean toggleOn)
     {
-        System.out.println("intakeToggle");
+        //System.out.println("intakeToggle");
         double speed = Constants.INTAKE_ON;
         double fltSpeed = 0.0;
         calledCount += 1;
@@ -63,15 +63,15 @@ public class Intake {
         neo550ShooterFrontIntake.set(fltSpeed);
         neo550ShooterRearIntake.set(fltSpeed);
 
-/*        
-        SmartDashboard.putNumber("FrontIntake called", 
-                                 calledCount);
-        SmartDashboard.putNumber("FrontIntake speed", 
-                                 fltSpeed);
-        SmartDashboard.putNumber("FrontIntake Velocity", 
-                                 neo550ShooterFrontIntakeEncoder.getVelocity());
-        SmartDashboard.putNumber("FrontIntake position",
-                                 neo550ShooterFrontIntakeEncoder.getPosition());
-*/
+        
+        // SmartDashboard.putNumber("FrontIntake called", 
+        //                          calledCount);
+        // SmartDashboard.putNumber("FrontIntake speed", 
+        //                          fltSpeed);
+        // SmartDashboard.putNumber("FrontIntake Velocity", 
+        //                          neo550ShooterFrontIntakeEncoder.getVelocity());
+        // SmartDashboard.putNumber("FrontIntake position",
+        //                          neo550ShooterFrontIntakeEncoder.getPosition());
+
     }   
 }

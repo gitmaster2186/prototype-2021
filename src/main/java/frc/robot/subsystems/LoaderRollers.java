@@ -5,23 +5,22 @@ import com.revrobotics.CANSparkMax;
 // import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.DigitalInput;
-// import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class LoaderRollers {
     private CANSparkMax neo550ShooterLoaderRollerFront;
     private CANSparkMax neo550ShooterLoaderRollerBack;
+    FlyWheel flyWheel;
+
     //private RelativeEncoder neo550ShooterLoaderRollerEncoder;
     private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
     int dbgCount = 0;
-    int ballCount = 0;
-    // private boolean leftLimitSwitchTrippedValue = false;
-    // private boolean rightLimitSwitchTrippedValue = false;
   
     public LoaderRollers(CANSparkMax inneo550ShooterLoaderRollerFront,
-                         CANSparkMax inneo550ShooterLoaderRollerBack)
+                         CANSparkMax inneo550ShooterLoaderRollerBack,
+                         FlyWheel fly)
     {
         // we need the fly wheels because we need to check it is up to speed
         // before turning on the load roller.
@@ -30,84 +29,22 @@ public class LoaderRollers {
 
         neo550ShooterLoaderRollerFront.restoreFactoryDefaults();
         neo550ShooterLoaderRollerBack.restoreFactoryDefaults();
-
+        flyWheel = fly;
         // neo550 motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev.
         // neo550ShooterLoaderRollerEncoder  = neo550ShooterLoaderRollerFront.getEncoder();   
+        neo550ShooterLoaderRollerFront.setInverted(true);
 
     }
 
-    /*
-     * toggle the loader rollers on/off
-     * run while button is pushed to load ball into firing position
-     * do not load ball if flywheels are not up to speed 
-     * update but ignore the ball count.
-     * 
-     * objects used: falcon500ShooterFlyWheel1, 
-     *               falcon500ShooterFlyWheel2,
-     *               neo550ShooterLoaderRoller,
-     *               neo550ShooterLoaderRollerEncoder
-     *     
-     */
-    
-    public void toggle(boolean toggleOn)
+    public void setRollerSpeed(double speed)
     {
-        dbgCount += 1;
-        System.out.println("loaderToggle " + dbgCount);
-        double speed = Constants.LOADER_SPEED_ON;
-        double fltSpeed = 0.0;
+    //    double fltSpeed = loaderFilter.calculate(speed);
 
-        if (toggleOn == true)
-        {
-            fltSpeed = loaderFilter.calculate(speed);
-        }
-        
-        neo550ShooterLoaderRollerFront.set(fltSpeed);
-        neo550ShooterLoaderRollerBack.set(fltSpeed);
-
-        // add -1 to ballCount
-        incBallCount(-1);
-
-        SmartDashboard.putNumber("FrontLoader speed", 
-                                 speed);
-    }   
-
-    //  public void toggle(boolean buttonPressed)
-    // {
-    //     double speed = Constants.LOADER_SPEED_ON;
-    //     if (buttonPressed == false)  
-    //     {
-    //          speed = Constants.LOADER_SPEED_OFF;
-    //     }    
-    //     double fltSpeed = loaderFilter.calculate(speed);
-
-    //     neo550ShooterLoaderRollerFront.set(fltSpeed);
-    //     neo550ShooterLoaderRollerBack.set(fltSpeed);
-        
-    //     // if we want RPS instead of RPM?
-    //     // neo550ShooterLoaderRollerEncoder.setVelocityConversionFactor(60);
-        
-    //     // put up the rpm number
-    //     SmartDashboard.putNumber("LoadRoller Velocity", 
-    //                              neo550ShooterLoaderRollerEncoder.getVelocity());
-    // }
-    public void setBallCount(int count)
-    {
-        ballCount = count;
+   // neo550ShooterLoaderRollerFront.set(fltSpeed);
+   // neo550ShooterLoaderRollerBack.set(fltSpeed);
+    neo550ShooterLoaderRollerFront.set(speed);
+    neo550ShooterLoaderRollerBack.set(speed);
     }
 
-    public void incBallCount(int count)
-    {
-        ballCount += count;
-    }
-
-    public boolean ballLoaded() 
-    {
-        boolean ret = false;
-        if (ballCount > 0)
-        {
-            ret = true;
-        }
-        return ret;
-    }
 
 }

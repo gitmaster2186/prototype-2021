@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+//import edu.wpi.first.math.filter.SlewRateLimiter;
 //import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -15,10 +15,10 @@ public class FlyWheel {
     // private int startballShootTimedCounter = 0;
     // private int stopballShootTimedCounter = 0;
     // private boolean shooterActive = false;
-    private int startFireBallCounter = 0;
-    private int stopFireBallCounter = 0;
-    private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
-    private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
+    //private int startFireBallCounter = 0;
+    //private int stopFireBallCounter = 0;
+    // private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
+    // private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
                                       
     public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheel1,
                     WPI_TalonFX inFalcon500ShooterFlyWheel2)
@@ -41,22 +41,24 @@ public class FlyWheel {
      * 
      * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
      */
-    public void toggle(boolean buttonPressed)
+    public void setFlyWheelSpeed(double inFlySpeed)
     {
         double speed;
-        double xl = 0.0;
-        double xr = 0.0;
-        if (buttonPressed == false)
+        double xl;
+        double xr;
+        if (inFlySpeed == Constants.FLYWHEEL_OFF) 
         {
+            xl = 0.0;
+            xr = 0.0;
             // shooterActive = false;
-            stopFireBallCounter += 1;
-            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
+            //stopFireBallCounter += 1;
+            // SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
         }
         else
         {
-            speed = Constants.FLYWHEEL_ON;
+            speed = inFlySpeed;
             // shooterActive = true;
-            startFireBallCounter += 1;
+            //startFireBallCounter += 1;
 
             // !!!SID!!! XXX - reenabled the ramp filters?
             //xl = leftFlyfilter.calculate(speed);
@@ -64,7 +66,7 @@ public class FlyWheel {
 
             xl = speed;
             xr = speed;
-            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
+            // SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
         }
 
         // set the left flywheel speed
@@ -74,8 +76,6 @@ public class FlyWheel {
 
         // measure the velocity of each flywheel and display the data
         // on the dashboard for debug.
-        double vel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyW1vel", vel1);
 
         double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
         SmartDashboard.putNumber("flyW2vel", vel2);
@@ -94,6 +94,12 @@ public class FlyWheel {
             ret = true;
         }
 
+        // double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        // SmartDashboard.putNumber("flyW2vel", flyVel2);
+        // if (flyVel2 >= Constants.FLYWHEEL_MIN_VEL)
+        // {
+        //     ret = true;
+        // }
         return ret;
     }
     
@@ -111,7 +117,7 @@ public class FlyWheel {
     //     if (shooterActive == false)
     //     {
     //         startTime =  Timer.getFPGATimestamp(); // get sys time in seconds
-    //         toggle(true);
+    //         activate(true);
     //         startballShootTimedCounter += 1;
     //         SmartDashboard.putNumber("startballShootTimedCounter", startballShootTimedCounter);
     //     }
@@ -122,7 +128,7 @@ public class FlyWheel {
     //         // are we done (timer expired)?
     //         if ((nowTime - startTime) >= fireTurrentTimeSeconds)
     //         {
-    //             toggle(false);
+    //             activate(false);
 
     //             stopballShootTimedCounter += 1;
     //             SmartDashboard.putNumber("stopballShootTimedCounter", stopballShootTimedCounter);

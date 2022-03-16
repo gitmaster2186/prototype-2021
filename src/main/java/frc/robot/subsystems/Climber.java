@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Climber {
@@ -35,10 +35,10 @@ public class Climber {
         falcon500Climber1.set(speed);
         falcon500Climber2.set(speed);
    
-        SmartDashboard.putNumber("climber 1 Velocity", 
-                                  falcon500Climber1.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("climber 2 Velocity", 
-                                  falcon500Climber2.getSelectedSensorVelocity());
-        System.out.println("climbers " + buttonPressed);
+        // SmartDashboard.putNumber("climber 1 Velocity", 
+        //                           falcon500Climber1.getSelectedSensorVelocity());
+        // SmartDashboard.putNumber("climber 2 Velocity", 
+        //                           falcon500Climber2.getSelectedSensorVelocity());
+        // System.out.println("climbers " + buttonPressed);
     }
 }
