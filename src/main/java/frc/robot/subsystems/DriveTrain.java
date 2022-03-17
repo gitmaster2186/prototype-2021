@@ -4,9 +4,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 //import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.controller.PIDController;
+//import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.util.Units;
+//import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -19,8 +19,8 @@ import frc.robot.utils.TankSpeeds;
 public class DriveTrain {
 
     // !!!SID!!! XXX - TBD - tune distance and steering limits
-    private static final double TARGET_DISTANCE_LIMIT = 1.0;
-    private static final double TARGET_STEERING_LIMIT = 1.0;
+    //private static final double TARGET_DISTANCE_LIMIT = 1.0;
+    //private static final double TARGET_STEERING_LIMIT = 1.0;
 
     private CANSparkMax neoDriveTrainFrontLeft;
     private CANSparkMax neoDriveTrainFrontRight;
@@ -45,6 +45,7 @@ public class DriveTrain {
     private int limeNoTarget = 0;
     double prevLeft = 0;
     double prevRight = 0;
+    boolean flipped = false;
 
     public DriveTrain(CANSparkMax inNeoDriveTrainFrontLeft,
                       CANSparkMax inNeoDriveTrainFrontRight,
@@ -318,6 +319,10 @@ public class DriveTrain {
         return ret;
     }
 
+    public void flip()
+    {
+        flipped = !flipped;
+    }
     // our version of tankdrive
     public void tankDrive(TankSpeeds tankSpeed, boolean driverAssistMode)
     {
@@ -359,6 +364,13 @@ public class DriveTrain {
         //                          neoDtFrontLeftEncoder.getPosition());
         // SmartDashboard.putNumber("rightPos", 
         //                         neoDtFrontRightEncoder.getPosition());
+        if (flipped == true)
+        {
+            double tmp = xl;
+            xl = -xr;
+            xr = -tmp;
+            SmartDashboard.putBoolean("isFlipped", flipped);
+        }
 
         drive.tankDrive(xl, xr);
     }

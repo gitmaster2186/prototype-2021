@@ -1,44 +1,35 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Climber {
-    private WPI_TalonFX falcon500Climber1;
-    private WPI_TalonFX falcon500Climber2;
-
-    public Climber(WPI_TalonFX inFalcon500Climber1,
-                   WPI_TalonFX inFalcon500Climber2)
+    private final DoubleSolenoid m_doubleSolenoidLeft;
+    private final DoubleSolenoid m_doubleSolenoidRight;
+    
+    public Climber(DoubleSolenoid doubleSolenoidLeft,
+                   DoubleSolenoid doubleSolenoidRight)
     {
-        falcon500Climber1 = inFalcon500Climber1;
-        falcon500Climber2 = inFalcon500Climber2;
-
-        falcon500Climber1.configFactoryDefault();
-        falcon500Climber2.configFactoryDefault();
+        m_doubleSolenoidLeft = doubleSolenoidLeft;
+        m_doubleSolenoidRight = doubleSolenoidRight;
     }
      
     /*
-     * turn climbers on or off
+     * climb up or down
      * 
-     * objects used: falcon500Climber1, 
-     *               falcon500Climber2
+     * objects used: m_doubleSolenoidLeft, 
+     *               m_doubleSolenoidRight
      */
-    public void toggle(boolean buttonPressed)
-    {
-       double speed = Constants.CLIMBER_SPEED_OFF;
-   
-        if (buttonPressed == true)
-        {
-           speed = Constants.CLIMBER_SPEED_ON;
-        }
-        falcon500Climber1.set(speed);
-        falcon500Climber2.set(speed);
-   
-        // SmartDashboard.putNumber("climber 1 Velocity", 
-        //                           falcon500Climber1.getSelectedSensorVelocity());
-        // SmartDashboard.putNumber("climber 2 Velocity", 
-        //                           falcon500Climber2.getSelectedSensorVelocity());
-        // System.out.println("climbers " + buttonPressed);
+    public void climb(int direction)
+    {  
+       Value value = DoubleSolenoid.Value.kForward;
+       if (direction == Constants.CLIMBER_DOWN_DIRECTION)
+       {
+         value = DoubleSolenoid.Value.kReverse;
+       }
+       m_doubleSolenoidLeft.set(value);
+       m_doubleSolenoidRight.set(value);
     }
 }

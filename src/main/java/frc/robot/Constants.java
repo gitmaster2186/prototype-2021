@@ -20,33 +20,34 @@ public class Constants {
      *   6.  unassigned
      *   7.  reject ball 
      *   8.  turn turret right
-     *   9.  activate shooter timed
-     *  10.  toggle climber
+     *   9.  climber up
+     *  10.  climber down
      *  11.  limelight LEDs
-     *  12.  debug
+     *  12.  debug (allow shooter)
      */
 
     /*
      * alt joystick -- start -- extreme 3dpro joystick button mapping
      */
-    public static final int ACTIVATE_SHOOTER_BUTTON   = 1;       // stick, trigger -- flywheels and loader on
-    public static final int AIM_ASSIST_BUTTON         = 2;       // stick, thumb button -- vision assisted driving
+    public static final int ACTIVATE_SHOOTER_BUTTON     = 1;    // stick, trigger -- flywheels and loader on
+    public static final int AIM_ASSIST_BUTTON           = 2;    // stick, thumb button -- vision assisted driving
 
-    public static final int TOGGLE_INTAKE_BUTTON = 3;       // stick, bottom, left -- manual intake control
-    public static final int LOADER_ONLY_BUTTON   = 4;       // stick, bottom, right -- manual loader control
-    public static final int FLYWHEEL_ONLY_BUTTON = 5;       // stick, top,  left -- manual flywheel control
-    public static final int AVAILABLE_1_BUTTON   = 6;       // stick, top,  right -- available, no function
+    public static final int TOGGLE_INTAKE_BUTTON        = 3;    // stick, bottom, left -- manual intake control
+    public static final int LOADER_ONLY_BUTTON          = 4;    // stick, bottom, right -- manual loader control
+    public static final int FLYWHEEL_ONLY_BUTTON        = 5;    // stick, top,  left -- manual flywheel control
+    public static final int AVAILABLE_1_BUTTON          = 6;    // stick, top,  right -- available, no function
     
-    public static final int REJECT_BALL_BUTTON   = 7;       // base, top, left -- shoot ball with minumun power 
-    public static final int TURN_TURRET_LEFT_BUTTON   = 8;  // base, top, right, available, no function
-    // !!!SID!!! XXX - Should we change the turret to use the joystick y axis?
-    
-    public static final int CLIMBER_UP_BUTTON  = 9;       // base, mid, left,  -- put climber up
-    public static final int CLIMBER_DOWN_BUTTON   = 10;   // base, mid, right, -- put climber down
-
-    public static final int LIMELIGHT_LEDS_BUTTON     = 11;   // base, bottom, right, -- toggle limelight
-    public static final int DEBUG_BUTTON              = 12;   // base, bottom, left, -- activate trigger shooting
+    public static final int REJECT_BALL_BUTTON          = 7;    // base, top, left -- shoot ball with minumun power 
+    public static final int TURN_TURRET_LEFT_BUTTON     = 8;    // base, top, right, available, no function
+    public static final int CLIMBER_UP_BUTTON           = 9;    // base, mid, left,  -- put climber up
+    public static final int CLIMBER_DOWN_BUTTON         = 10;   // base, mid, right, -- put climber down
+    public static final int LIMELIGHT_LEDS_BUTTON       = 11;   // base, bottom, left, -- toggle limelight
+    public static final int DEBUG_BUTTON                = 12;   // base, bottom, right, -- activate trigger shooting
     // alt joystick -- end   -- extreme 3dpro joystick button mapping
+
+    // driver joystick buttons
+    public static final int DRIVER_FLIP_DRIVETRAIN_BUTTON = 1;
+    public static final int DRIVER_DEBUG_BUTTON           = 5;   
 
     /*
      * CAN bus ID assignments
@@ -73,9 +74,13 @@ public class Constants {
     // turret
     public static final int SPARK_NEO550_TURRET_CAN_ID = 8;
 
+    // climber pnumatic values
+    public static final int CLIMBER_UP_DIRECTION = 0;
+    public static final int CLIMBER_DOWN_DIRECTION = 1;
+
     // climber
-    public static final int FALCON500_LEFT_CLIMBER_CAN_ID = 3;
-    public static final int FALCON500_RIGHT_CLIMBER_CAN_ID = 6;
+    // public static final int FALCON500_LEFT_CLIMBER_CAN_ID = 3;
+    // public static final int FALCON500_RIGHT_CLIMBER_CAN_ID = 6;
 
 
     /*
@@ -95,8 +100,8 @@ public class Constants {
     public static final double TURRET_ON = 0.5;
 
     // speeds for climbers motors
-    public static final double CLIMBER_SPEED_OFF = 0.0;
-    public static final double CLIMBER_SPEED_ON = 0.25;
+    // public static final double CLIMBER_SPEED_OFF = 0.0;
+    // public static final double CLIMBER_SPEED_ON = 0.25;
 
     // speeds for flywheel motors
     public static final double FLYWHEEL_OFF = 0.0;
@@ -104,7 +109,6 @@ public class Constants {
     public static final double FLYWHEEL_REJECT_SPEED = 0.25;
 
     // for flywheel up to speed test
-    // !!!SID!!! XXX - change this to a real value.
     public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
 
@@ -114,7 +118,7 @@ public class Constants {
     public static final double FLY_WHEEL_RAMP_UP_POWER = 0.75;
     public static final double DRIVE_TRAIN_RAMP_UP_POWER = 1.0; // 1 == turned off
     public static final double TURRET_RAMP_UP_POWER = 0.75;
-    public static final double INTAKE_RAMP_UP_POWER = 0.25;
+    public static final double INTAKE_RAMP_UP_POWER = 0.50;
     public static final double LOADER_RAMP_UP_POWER = 0.75;
     public static final double INTAKE_FILTER_START_VALUE = 0.25;
 
@@ -131,16 +135,31 @@ public class Constants {
     public static final double VISION_MIN_ALIGN_SPEED = 0.1;
 
     // limelight on/off constants
+    public static final Number LIMELIGHT_LEDS_USE_CUR_PIPELINE = 0;
     public static final Number LIMELIGHT_LEDS_OFF = 1;
+    public static final Number LIMELIGHT_LEDS_BLINK = 2;
     public static final Number LIMELIGHT_LEDS_ON = 3;
+
+    /*
+     * camMode	Sets limelight’s operation mode
+     * 0	Vision processor
+     * 1	Driver Camera (Increases exposure, disables vision processing)
+    */
+    public static final Number LIMELIGHT_CAM_MODE_VISION = 0;
+    public static final Number LIMELIGHT_LEDS_MODE_DRIVER = 1;
+
+    // PCM ports for the climber
+    public static final int LEFT_FIRST_PCM_PORT = 0;
+    public static final int LEFT_SECOND_PCM_PORT = 2;
+    public static final int RIGHT_FIRST_PCM_PORT = 1;
+    public static final int RIGHT_SECOND_PCM_PORT = 3;
+
 
     // limelight data names
     public static final String LIMELIGHT_VALID_TARGETS = "tv";
-    public static final String LIMELIGHT_HORIZONTAL_OFFSET =  "tx"; // or raw tx0, ty0, ta0?
+    public static final String LIMELIGHT_HORIZONTAL_OFFSET =  "tx";
     public static final String LIMELIGHT_VERTICAL_OFFSET =  "ty";
     public static final String LIMELIGHT_TARGET_AREA =  "ta";
-    // public static final String LIMELIGHT_HORIZONTAL_OFFSET =  "tx"; //original
-    // public static final String LIMELIGHT_VERTICAL_OFFSET =  "ty";//original
-    // public static final String LIMELIGHT_TARGET_AREA =  "ta";//original
     public static final String LIMELIGHT_LEDMODE = "ledMode";
+
 }

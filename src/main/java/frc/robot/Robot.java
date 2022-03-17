@@ -16,6 +16,14 @@
  *    - use color sensors at the input to reject wrong balls.
  *
  */
+
+/* USB order for the drivers
+ *  Left driver joystick - 0-
+ *  Right driver joystick - 1
+ *  Shooter joystick - 2
+ *  Xbox controler - 4
+ * 
+ */
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -36,6 +44,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import frc.robot.subsystems.FlyWheel;
 import frc.robot.subsystems.BallShooter;
+import frc.robot.subsystems.Climber;
 //import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -86,11 +95,11 @@ public class Robot extends TimedRobot
                                             neoDriveTrainRearRight);
 
 private final DoubleSolenoid m_doubleSolenoid1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
-                                            0,  // PCM port 0
-                                            2); // PCM port 2
+                                            Constants.LEFT_FIRST_PCM_PORT,  // PCM port 
+                                            Constants.LEFT_SECOND_PCM_PORT); // PCM port 
 private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
-                                            1,  // PCM port 1
-                                            3); // PCM port 3
+                                            Constants.RIGHT_FIRST_PCM_PORT,  // PCM port 
+                                            Constants.RIGHT_SECOND_PCM_PORT); // PCM port 
 
     private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_INTAKE_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_BACK_INTAKE_CAN_ID, MotorType.kBrushless);
@@ -101,14 +110,9 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
     private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
   
-    // private WPI_TalonFX falcon500Climber1         = new WPI_TalonFX(Constants.FALCON500_LEFT_CLIMBER_CAN_ID);
-    // private WPI_TalonFX falcon500Climber2         = new WPI_TalonFX(Constants.FALCON500_RIGHT_CLIMBER_CAN_ID);
-  
     private Intake intake = new Intake(neo550ShooterFrontIntake, 
                                        neo550ShooterRearIntake); 
     // private Turret turret = new Turret(neo550ShooterTurret);
-    // private Climber climber = new Climber(falcon500Climber1,
-    //                                       falcon500Climber2);
 
 
     private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
@@ -121,7 +125,7 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
 
     private AutonomousMode autoMode;
-
+    private Climber climber;
 
     int intakeOnCount = 0;
     boolean ledsOn = false;
@@ -129,8 +133,9 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     @Override
     public void robotInit()
     {
-        m_doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
-        m_doubleSolenoid2.set(DoubleSolenoid.Value.kReverse);
+        climber = new Climber(m_doubleSolenoid1, m_doubleSolenoid2);
+        climber.climb(Constants.CLIMBER_DOWN_DIRECTION);
+
         try {
             /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
             /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
@@ -171,21 +176,9 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     @Override
     public void teleopInit() 
     {    
-        if (altJoystick.getRawButtonPressed(Constants.CLIMBER_UP_BUTTON))
-        {
-          System.out.println("up");
-          m_doubleSolenoid1.set(DoubleSolenoid.Value.kForward );
-          m_doubleSolenoid2.set(DoubleSolenoid.Value.kForward );
-        } 
-        else if (altJoystick.getRawButtonPressed(Constants.CLIMBER_DOWN_BUTTON)) 
-        {
-          System.out.println("down");
-          m_doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
-          m_doubleSolenoid2.set(DoubleSolenoid.Value.kReverse);
-        }
         //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
         //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
-}
+    }
 
     @Override
     // gets called 50 times a second
@@ -239,6 +232,18 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_OFF);
         }
 
+        // climb stage 1
+        if (altJoystick.getRawButtonPressed(Constants.CLIMBER_UP_BUTTON))
+        {
+          System.out.println("up");
+          climber.climb(Constants.CLIMBER_UP_DIRECTION);
+        } 
+        else if (altJoystick.getRawButtonPressed(Constants.CLIMBER_DOWN_BUTTON)) 
+        {
+          System.out.println("down");
+          climber.climb(Constants.CLIMBER_DOWN_DIRECTION);
+        }
+
         /* 
          * set aim assist mode on/off
          * This will be input to our tankDrive method
@@ -279,7 +284,16 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             SmartDashboard.putBoolean("ledsOnxx", ledsOn);
     }
 
-        if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
+    if (rightJoystick.getRawButton(Constants.DRIVER_DEBUG_BUTTON)) 
+    {
+        if (rightJoystick.getRawButtonPressed(Constants.DRIVER_FLIP_DRIVETRAIN_BUTTON))
+        {
+            driveTrain.flip();
+        }
+    }
+
+    // to use shooter button also hold the debug button
+    if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
         {
         //     System.out.println("leftSpeed: " + 
         //                         tankSpeed.leftSpeed + 
@@ -312,7 +326,7 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
 
         /*
          * disabled: turret, flywheel.timed, 
-         *           ballShooter (automated shooter), climber, 
+         *           
          * 
          * The commented-out code was moved to the bottom of the file.
          * don't delete the commented-out code yet.

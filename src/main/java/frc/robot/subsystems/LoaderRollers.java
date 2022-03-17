@@ -4,10 +4,10 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 // import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+// import edu.wpi.first.math.filter.SlewRateLimiter;
 //import edu.wpi.first.wpilibj.DigitalInput;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
+// import frc.robot.Constants;
 
 public class LoaderRollers {
     private CANSparkMax neo550ShooterLoaderRollerFront;
@@ -15,7 +15,7 @@ public class LoaderRollers {
     FlyWheel flyWheel;
 
     //private RelativeEncoder neo550ShooterLoaderRollerEncoder;
-    private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
+    //private SlewRateLimiter loaderFilter = new SlewRateLimiter(Constants.LOADER_RAMP_UP_POWER);
     int dbgCount = 0;
   
     public LoaderRollers(CANSparkMax inneo550ShooterLoaderRollerFront,

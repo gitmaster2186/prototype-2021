@@ -94,12 +94,6 @@ public class FlyWheel {
             ret = true;
         }
 
-        // double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        // SmartDashboard.putNumber("flyW2vel", flyVel2);
-        // if (flyVel2 >= Constants.FLYWHEEL_MIN_VEL)
-        // {
-        //     ret = true;
-        // }
         return ret;
     }
     
