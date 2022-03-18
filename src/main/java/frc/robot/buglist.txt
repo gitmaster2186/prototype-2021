@@ -25,6 +25,7 @@ this is the open bug list
     - robot code
     - ???
 - should the driver assist button be moved from the aux joystick to one of the driver joysticks?
-- ???
+- come up with driving constant after using getPosition() method
+- figure out how far we will travel in the distanceMove() method that was created in Drivetrain.java
 
 

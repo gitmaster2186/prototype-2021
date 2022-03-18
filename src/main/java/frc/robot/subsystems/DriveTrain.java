@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 //import com.revrobotics.RelativeEncoder;
+import com.revrobotics.RelativeEncoder;
 
 //import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -27,8 +28,8 @@ public class DriveTrain {
     private CANSparkMax neoDriveTrainRearLeft;
     private CANSparkMax neoDriveTrainRearRight;
     private DifferentialDrive drive;
-    //private RelativeEncoder neoDtFrontLeftEncoder;
-    //private RelativeEncoder neoDtFrontRightEncoder;
+    private RelativeEncoder neoDtFrontLeftEncoder;
+    private RelativeEncoder neoDtFrontRightEncoder;
     //private RelativeEncoder neo550ShooterRearIntakeEncoder  = neo550ShooterRearIntake.getEncoder();   
     //private RelativeEncoder neo550ShooterTurretEncoder      = neo550ShooterTurret.getEncoder();   
    
@@ -79,8 +80,8 @@ public class DriveTrain {
         neoDriveTrainRearRight.setInverted(true);
 
         // NEO motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev
-        //neoDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
-        //neoDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
+        neoDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
+        neoDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
 
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
                                       neoDriveTrainFrontRight);                              
@@ -136,7 +137,9 @@ public class DriveTrain {
                 //read values periodically  
                 // !!!SID!!! XXX - should we be using raw values instead?      
                 NetworkTableEntry tx = limeLightTable.getEntry(Constants.LIMELIGHT_HORIZONTAL_OFFSET); 
-                double x = tx.getDouble(0.0); // -29.8 to 29.8 degrees
+                double x = tx.getDouble(0.0); 
+                
+                // -29.8 to 29.8 degrees
                 /*
                     29.8 * 0.1 - 0.05 = 2.93 // this can't be right
                     29.8 * 0.035 - 0.05 = 0.993
@@ -285,14 +288,29 @@ public class DriveTrain {
         return (gotTarget);
     }
 
+
     // move a specified distance.
     // return true if done or false if not done traveling.
-    public boolean distanceMove(double distance)
+    // We need gearbox ratios, encoder values for distance of one foot (), and diameter of wheels.
+    /*
+    public boolean distanceMove(double distanceToTravel)
     {
         TankSpeeds ts = new TankSpeeds(0.5, 0.5);
+        double lPos = neoDtFrontLeftEncoder.getPosition() * kDriveTick2Feet;   
+        double rPos = neoDtFrontRightEncoder.getPosition() * kDriveTick2Feet;   
+        double calcDist = (lPos + rPos) / 2;
+
+        if (calcDist >= distanceToTravel)
+        {
+            ts.leftSpeed = 0;
+            ts.rightSpeed = 0;
+        }
+
         tankDrive(ts, false);
+
         return false;
     }
+*/
 
     public void timerInit()
     {

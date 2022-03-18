@@ -163,6 +163,10 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
    */
   public void autonomousInit() {
         autoMode = new AutonomousMode(driveTrain, ballShooter);
+
+        // !!!SID!!! - XXX - 3/17/22 does this make us stop quicker?
+        neoDriveTrainFrontLeft.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        neoDriveTrainFrontRight.setIdleMode(CANSparkMax.IdleMode.kBrake);
   }
 
   /**
@@ -178,6 +182,11 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     {    
         //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
         //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+
+        // !!!SID!!! - XXX - 3/17/22 does this allow our drive train to coast?
+        neoDriveTrainFrontLeft.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        neoDriveTrainFrontRight.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
     }
 
     @Override
@@ -282,25 +291,27 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             }
             System.out.println("test?: " + ledsOn);
             SmartDashboard.putBoolean("ledsOnxx", ledsOn);
-    }
-
-    if (rightJoystick.getRawButton(Constants.DRIVER_DEBUG_BUTTON)) 
-    {
-        if (rightJoystick.getRawButtonPressed(Constants.DRIVER_FLIP_DRIVETRAIN_BUTTON))
-        {
-            driveTrain.flip();
         }
-    }
 
-    // to use shooter button also hold the debug button
-    if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
+        // check the driver right joystick
+        if (rightJoystick.getRawButton(Constants.DRIVER_DEBUG_BUTTON)) 
         {
-        //     System.out.println("leftSpeed: " + 
-        //                         tankSpeed.leftSpeed + 
-        //                         " rightSpeed: " + 
-        //                         tankSpeed.rightSpeed +
-        //                         " driverAssist: " +
-        //                         driverAssistMode);
+            // 
+            if (rightJoystick.getRawButtonPressed(Constants.DRIVER_FLIP_DRIVETRAIN_BUTTON))
+            {
+                driveTrain.flip();
+            }
+        }
+
+        // to use shooter button also hold the debug button
+        if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
+        {
+            //System.out.println("leftSpeed: " + 
+            //                   tankSpeed.leftSpeed + 
+            //                   " rightSpeed: " + 
+            //                   tankSpeed.rightSpeed +
+            //                   " driverAssist: " +
+            //                   driverAssistMode);
 
             if (altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_BUTTON))
             {
@@ -321,7 +332,6 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             {
                 ballShooter.manualStop();
             }
-
         }
 
         /*
