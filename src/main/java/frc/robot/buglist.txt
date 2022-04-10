@@ -25,7 +25,23 @@ this is the open bug list
     - robot code
     - ???
 - should the driver assist button be moved from the aux joystick to one of the driver joysticks?
+
+----TBD-----
 - come up with driving constant after using getPosition() method
 - figure out how far we will travel in the distanceMove() method that was created in Drivetrain.java
+- do we need to increase deadband on driveTrain from default (0.02)?
 
-
+---To Be Tested --- 3/18/22 ---
+- test climber
+    - pneumatics - OK
+- test brake mode - 
+    - auto on 
+    - teleop off
+- adjust how long motors run in auto mode
+- test JayFlip/Brake mode - OK
+- test limelight aim assist
+- run driver-station on old laptop 
+  - test static IP addresses
+- run driverstation in practice mode
+- autonomous mode 
+Need to turn off Auto-shoot after ball is shot.

@@ -84,7 +84,7 @@ public class AutonomousMode {
                 // for now do a dumb timed based move
                 // !!!SID!!! XXX - this should be a distance based move 
                 //                 with encoders and gyro to move straight
-                if ((driveTrain.timedMove(AUTO_MOVE_TIME, -AUTO_MOVE_SPEED) == true) ||
+                if ((driveTrain.timedMove(AUTO_MOVE_TIME, -AUTO_MOVE_SPEED, -AUTO_MOVE_SPEED, true) == true) ||
                     (stateTimer.timerTest(AUTO_MOVE_TIME) == true))
                 {
                     // skip over aim state until we get limelight working
@@ -106,12 +106,15 @@ public class AutonomousMode {
                 break;
  */   
             case AUTO_STATE_SHOOT:
-                TankSpeeds ts1 = new TankSpeeds(0, 0);
-                driveTrain.tankDrive(ts1, false); // make sure we stopped
+                TankSpeeds ts1 = new TankSpeeds(0, 0); 
+                driveTrain.tankDrive(ts1, false, true); // make sure we stopped
                 
-                // try to shoot the ball                
+                // try to shoot the ball
+                // !!!SID!!! XXX - 3//26/22 -- 3rd parm means don't use limit switch in 
+                //           XXX - shooter. Change this to true once the switch is installed.                
                 if ((shooter.activate(Constants.LOADER_SPEED_ON, 
-                                      Constants.FLYWHEEL_ON) == true) || 
+                                      Constants.FLYWHEEL_ON,
+                                      false, true) == true) || 
                     (stateTimer.timerTest(AUTO_SHOOT_TIME) == true))
                 {
                     nextState("Wait", AutonomousStateEnum.AUTO_STATE_WAIT, true);

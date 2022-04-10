@@ -42,7 +42,7 @@ public class Constants {
     public static final int CLIMBER_UP_BUTTON           = 9;    // base, mid, left,  -- put climber up
     public static final int CLIMBER_DOWN_BUTTON         = 10;   // base, mid, right, -- put climber down
     public static final int LIMELIGHT_LEDS_BUTTON       = 11;   // base, bottom, left, -- toggle limelight
-    public static final int DEBUG_BUTTON                = 12;   // base, bottom, right, -- activate trigger shooting
+    public static final int ALT_DEBUG_BUTTON            = 12;   // base, bottom, right, -- activate trigger shooting
     // alt joystick -- end   -- extreme 3dpro joystick button mapping
 
     // driver joystick buttons
@@ -78,10 +78,10 @@ public class Constants {
     public static final int CLIMBER_UP_DIRECTION = 0;
     public static final int CLIMBER_DOWN_DIRECTION = 1;
 
-    // climber
-    // public static final int FALCON500_LEFT_CLIMBER_CAN_ID = 3;
-    // public static final int FALCON500_RIGHT_CLIMBER_CAN_ID = 6;
-
+    // roborio DIO assignments
+    public static final int LOADER_LIMIT_SWITCH = 9;
+    public static final int LEFT_PISTON_LIMIT_SWITCH = 8;
+    public static final int RIGHT_PISTON_LIMIT_SWITCH = 7;
 
     /*
      * motor speeds
@@ -106,10 +106,12 @@ public class Constants {
     // speeds for flywheel motors
     public static final double FLYWHEEL_OFF = 0.0;
     public static final double FLYWHEEL_ON = 1.0;
+    // public static final double FLYWHEEL_ON = 0.9; // !!!SID!!! XXXX
     public static final double FLYWHEEL_REJECT_SPEED = 0.25;
 
     // for flywheel up to speed test
-    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this
+//    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this
+    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this 150000
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
 
     /* 
@@ -118,13 +120,9 @@ public class Constants {
     public static final double FLY_WHEEL_RAMP_UP_POWER = 0.75;
     public static final double DRIVE_TRAIN_RAMP_UP_POWER = 1.0; // 1 == turned off
     public static final double TURRET_RAMP_UP_POWER = 0.75;
-    public static final double INTAKE_RAMP_UP_POWER = 0.50;
+    public static final double INTAKE_RAMP_UP_POWER = 0.80;
     public static final double LOADER_RAMP_UP_POWER = 0.75;
     public static final double INTAKE_FILTER_START_VALUE = 0.25;
-
-    // roborio DIO assignments
-    public static final int DIOleftLimitSwitch = 0;
-    public static final int DIOrightLimitSwitch = 1;
 
     
     /*

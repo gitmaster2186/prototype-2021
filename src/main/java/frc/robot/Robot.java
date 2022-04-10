@@ -26,33 +26,40 @@
  */
 package frc.robot;
 
+import javax.print.attribute.standard.Compression;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import frc.robot.subsystems.FlyWheel;
 import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.Climber;
-//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LoaderRollers;
-//import frc.robot.subsystems.Turret;
+import frc.robot.utils.LimeLightSupport;
 import frc.robot.utils.TankSpeeds;
 
-import edu.wpi.first.wpilibj.SPI;
+//import frc.robot.subsystems.Climber;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import com.kauailabs.navx.frc.AHRS;
+// import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.SPI;
+//import frc.robot.subsystems.Turret;
 
 
 
@@ -65,14 +72,13 @@ import edu.wpi.first.wpilibj.SPI;
 public class Robot extends TimedRobot 
 {
 
-
     public TankSpeeds getManualTankSpeed()
     {
         return new TankSpeeds(-leftJoystick.getY(),
-                             -rightJoystick.getY());
+                              -rightJoystick.getY());
     }
 
-    AHRS ahrs; // navx 
+    // AHRS ahrs; // navx 
       
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable limeLightTable = inst.getTable("limelight");
@@ -94,66 +100,117 @@ public class Robot extends TimedRobot
                                             neoDriveTrainRearLeft,
                                             neoDriveTrainRearRight);
 
-private final DoubleSolenoid m_doubleSolenoid1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
-                                            Constants.LEFT_FIRST_PCM_PORT,  // PCM port 
-                                            Constants.LEFT_SECOND_PCM_PORT); // PCM port 
-private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
-                                            Constants.RIGHT_FIRST_PCM_PORT,  // PCM port 
-                                            Constants.RIGHT_SECOND_PCM_PORT); // PCM port 
+    private final DoubleSolenoid m_doubleSolenoid1 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
+                                                Constants.LEFT_FIRST_PCM_PORT,  // PCM port 
+                                                Constants.LEFT_SECOND_PCM_PORT); // PCM port 
+    private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 
+                                                Constants.RIGHT_FIRST_PCM_PORT,  // PCM port 
+                                                Constants.RIGHT_SECOND_PCM_PORT); // PCM port 
 
     private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_INTAKE_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_BACK_INTAKE_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterLoaderRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_LOADER_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterLoaderRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_BACK_LOADER_CAN_ID, MotorType.kBrushless);
-    // private CANSparkMax neo550ShooterTurret       = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
 
-    private WPI_TalonFX falcon500ShooterFlyWheel1 = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
-    private WPI_TalonFX falcon500ShooterFlyWheel2 = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheelFront = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
+    private WPI_TalonFX falcon500ShooterFlyWheelBack = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
   
     private Intake intake = new Intake(neo550ShooterFrontIntake, 
                                        neo550ShooterRearIntake); 
+
+    // private CANSparkMax neo550ShooterTurret = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
     // private Turret turret = new Turret(neo550ShooterTurret);
 
-
-    private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheel1, 
-                                             falcon500ShooterFlyWheel2);
+    private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheelFront, 
+                                             falcon500ShooterFlyWheelBack);
 
      private LoaderRollers loaderRollers = new LoaderRollers (neo550ShooterLoaderRollerFront,
                                                               neo550ShooterLoaderRollerBack,
                                                               flyWheel);
-    // !!!SID!!! - XXX - TBD
-    private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain);
+
+    private DigitalInput loaderLimitSwitch = new DigitalInput(Constants.LOADER_LIMIT_SWITCH);
+    private DigitalInput leftPistonLimitSwitch = new DigitalInput(Constants.LEFT_PISTON_LIMIT_SWITCH);
+    private DigitalInput rightPistonLimitSwitch = new DigitalInput(Constants.RIGHT_PISTON_LIMIT_SWITCH);
+    private BallShooter ballShooter = new BallShooter(intake, loaderRollers, flyWheel, driveTrain, loaderLimitSwitch);
 
     private AutonomousMode autoMode;
     private Climber climber;
+    private Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    //private PowerDistribution examplePdp = new PowerDistribution(1, ModuleType.kRev);
+    LimeLightSupport limeLeds;
 
     int intakeOnCount = 0;
-    boolean ledsOn = false;
+    int intakeOffCount = 0;
+
+    double vx = 0.0;
+
+    //boolean ledsOn = true; // the limelight lights defaults to on?
+
+    // this forces the limelight LEDs on or off
+    // private void limeLeds.ledsSet(boolean inLedsOn)
+    // {
+    //     Number dir;
+    //     if (inLedsOn == true)
+    //     {
+    //         dir = Constants.LIMELIGHT_LEDS_ON;
+    //         ledsOn = true;
+    //     }
+    //     else
+    //     {
+    //         ledsOn = false;
+    //         dir = Constants.LIMELIGHT_LEDS_OFF;
+    //     }
+    //     limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(dir);
+    //     SmartDashboard.putBoolean("ledsOnxx", ledsOn);
+    // }
+
+    // // this toggles the limelight LEDs on or off
+    // private void limeLightLEDsToggle()
+    // {
+    //     if (ledsOn == false)
+    //     {
+    //         limeLeds.ledsSet(true);
+    //     }
+    //     else
+    //     {
+    //         limeLeds.ledsSet(false);
+    //     }
+    // }
 
     @Override
     public void robotInit()
     {
         climber = new Climber(m_doubleSolenoid1, m_doubleSolenoid2);
+        limeLeds = new LimeLightSupport();
+
+        // make sure the arms are in (lowest position)
         climber.climb(Constants.CLIMBER_DOWN_DIRECTION);
 
-        try {
-            /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
-            /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
-            /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
-            // RoboRIO MXP I2C Interface
-            ahrs  = new AHRS(SPI.Port.kMXP); 
-        } catch (RuntimeException ex ) {
-            DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
-        }
-        ahrs.reset();
+        // try {
+        //     /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+        //     /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+        //     /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+        //     // RoboRIO MXP I2C Interface
+        //     ahrs  = new AHRS(SPI.Port.kMXP); 
+        // } catch (RuntimeException ex ) {
+        //     DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+        // }
+        // ahrs.reset();
         String wpiVerStr = WPILibVersion.Version;
         System.out.println("WPI version " + wpiVerStr);
 
         // limelight leds off
-        limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
+        limeLeds.ledsSet(false);
 
         // turn the driver camera on
         CameraServer.startAutomaticCapture();
+
+        double comprAir = compressor.getPressure();
+        SmartDashboard.putNumber("comprAir", comprAir);
+
+        //double volts = examplePdp.getVoltage();
+        //SmartDashboard.putNumber("pdpVolts", volts);
+
     }
 
 
@@ -162,9 +219,13 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
    * This function is called once at the start of autonomous.
    */
   public void autonomousInit() {
+        // limelight leds on
+        limeLeds.ledsSet(true);
+
         autoMode = new AutonomousMode(driveTrain, ballShooter);
 
         // !!!SID!!! - XXX - 3/17/22 does this make us stop quicker?
+        //             This is important in autonomous mode
         neoDriveTrainFrontLeft.setIdleMode(CANSparkMax.IdleMode.kBrake);
         neoDriveTrainFrontRight.setIdleMode(CANSparkMax.IdleMode.kBrake);
   }
@@ -180,12 +241,13 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     @Override
     public void teleopInit() 
     {    
-        //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds off
-        //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
+        // limelight leds off
+        limeLeds.ledsSet(false);
 
-        // !!!SID!!! - XXX - 3/17/22 does this allow our drive train to coast?
+        // put drivetrain back in coast mode
         neoDriveTrainFrontLeft.setIdleMode(CANSparkMax.IdleMode.kCoast);
         neoDriveTrainFrontRight.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        SmartDashboard.putNumber("vxIn", 0.0);
 
     }
 
@@ -194,6 +256,12 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
     public void teleopPeriodic() {
         boolean driverAssistMode;
         
+        // !!!SID!!! XXX - debug - look at the air pressure and battery voltage
+        double comprAir = compressor.getPressure();
+        SmartDashboard.putNumber("comprAir", comprAir);
+        //double volts = examplePdp.getVoltage();
+        //SmartDashboard.putNumber("pdpVolts", volts);
+
         /*
          * get speed values from joysticks
          * get them now because some cmds/buttons will modify the
@@ -201,7 +269,27 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
          */
         TankSpeeds tankSpeed = getManualTankSpeed(); 
 
+        /*
+         * test the limit switches on the pistons.
+         * if hit and moving forward then stop forward
+         * forward motion of the motor on that side
+         * This might allow us to align the robot to the 
+         * obstacle we're hitting.
+         */ 
+        SmartDashboard.putBoolean("leftLimit", leftPistonLimitSwitch.get());
+        if ((leftPistonLimitSwitch.get() == true) &&
+            (tankSpeed.leftSpeed > 0))
+        {
+            tankSpeed.leftSpeed = 0;
+        }
 
+        SmartDashboard.putBoolean("rightLimit", rightPistonLimitSwitch.get());
+        if ((rightPistonLimitSwitch.get() == true) && 
+            (tankSpeed.rightSpeed > 0))
+        {
+            tankSpeed.rightSpeed = 0;
+        }
+    
         // toggle intake motors on/off
         if (altJoystick.getRawButton(Constants.TOGGLE_INTAKE_BUTTON))
         {
@@ -210,47 +298,19 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
         }
         else if (altJoystick.getRawButtonReleased(Constants.TOGGLE_INTAKE_BUTTON))
         {
+            intakeOffCount += 1;
             intake.toggle(false);
         }
 
-        /*
-         * to manually shoot:
-         * 1. intake ball
-         * 2. hit the trigger
-         */
-        // as long as the trigger is pushed keep firing
-               
-               
-
-        //roller and flywheel individual cmds are only for debug
-        if (altJoystick.getRawButton(Constants.LOADER_ONLY_BUTTON))
-        {
-            loaderRollers.setRollerSpeed(Constants.LOADER_SPEED_ON);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.LOADER_ONLY_BUTTON))
-        {
-            loaderRollers.setRollerSpeed(Constants.LOADER_SPEED_OFF);
-        }
-        
-        if (altJoystick.getRawButton(Constants.FLYWHEEL_ONLY_BUTTON))
-        {
-            flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_ON);
-        }
-        else if (altJoystick.getRawButtonReleased(Constants.FLYWHEEL_ONLY_BUTTON))
-        {
-            flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_OFF);
-        }
-
-        // climb stage 1
         if (altJoystick.getRawButtonPressed(Constants.CLIMBER_UP_BUTTON))
         {
-          System.out.println("up");
-          climber.climb(Constants.CLIMBER_UP_DIRECTION);
+            // climb -- extend piston
+            climber.climb(Constants.CLIMBER_UP_DIRECTION);
         } 
         else if (altJoystick.getRawButtonPressed(Constants.CLIMBER_DOWN_BUTTON)) 
         {
-          System.out.println("down");
-          climber.climb(Constants.CLIMBER_DOWN_DIRECTION);
+            // climb -- retract piston
+            climber.climb(Constants.CLIMBER_DOWN_DIRECTION);
         }
 
         /* 
@@ -259,52 +319,36 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
          * to determine if we're using vision to position
          * the robot.
          */
-        if (altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) 
+        if ((altJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)) || 
+            (rightJoystick.getRawButton(Constants.AIM_ASSIST_BUTTON)))
         {
             driverAssistMode = true;
         } 
         else
         {
-            // limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds on
-            // ledsOn = false;
             driverAssistMode = false;
         }
 
-        //System.out.println("ledOn: " + ledsOn);
-
-        //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
         // toggle limelight leds on/off
         if (altJoystick.getRawButtonPressed(Constants.LIMELIGHT_LEDS_BUTTON))
         {
-            System.out.println("pressed: " + ledsOn);
-            if (ledsOn == false)
-            {
-                limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_ON); // leds on
-                ledsOn = true;
-                System.out.println("on?: " + ledsOn);
-            }
-            else
-            {
-                limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF); // leds on
-                ledsOn = false;
-                System.out.println("off?: " + ledsOn);
-            }
-            System.out.println("test?: " + ledsOn);
-            SmartDashboard.putBoolean("ledsOnxx", ledsOn);
+            //System.out.println("ledOn: " + ledsOn);
+            limeLeds.ledsToggle();
         }
 
-        // check the driver right joystick
+        // check the driver right joystick button is pressed now
         if (rightJoystick.getRawButton(Constants.DRIVER_DEBUG_BUTTON)) 
         {
-            // 
+            // pressed since last time checked
             if (rightJoystick.getRawButtonPressed(Constants.DRIVER_FLIP_DRIVETRAIN_BUTTON))
             {
+                // flip the drivetrain variable
                 driveTrain.flip();
             }
         }
-
-        // to use shooter button also hold the debug button
-        if (altJoystick.getRawButton(Constants.DEBUG_BUTTON)) 
+        
+        // hold the debug button and shooter button to shoot 
+        if (altJoystick.getRawButton(Constants.ALT_DEBUG_BUTTON)) 
         {
             //System.out.println("leftSpeed: " + 
             //                   tankSpeed.leftSpeed + 
@@ -316,14 +360,18 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             if (altJoystick.getRawButton(Constants.ACTIVATE_SHOOTER_BUTTON))
             {
                 ballShooter.activate(Constants.LOADER_SPEED_ON, 
-                                    Constants.FLYWHEEL_ON);
+                                    Constants.FLYWHEEL_ON,
+                                    true, false); // use the limit switch
             }
             else if (altJoystick.getRawButtonReleased(Constants.ACTIVATE_SHOOTER_BUTTON))
             {
                 ballShooter.manualStop();
+                SmartDashboard.putNumber("flyWFrVel", 0);
+                SmartDashboard.putNumber("flyWBaVel", 0);
+        
             }
 
-            // if have the wrong ball in the intake reject it
+            // if we have the wrong ball in the intake reject it
             if (altJoystick.getRawButton(Constants.REJECT_BALL_BUTTON))
             {
                 ballShooter.manualReject();
@@ -331,8 +379,57 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
             else if (altJoystick.getRawButtonReleased(Constants.REJECT_BALL_BUTTON))
             {
                 ballShooter.manualStop();
+                SmartDashboard.putNumber("flyWFrVel", 0);
+                SmartDashboard.putNumber("flyWBaVel", 0);
             }
         }
+        else
+        {
+            // debug button on alt stick is off to allow manual shooting
+
+            /*
+            * to manually shoot:
+            * 1. intake ball
+            * 2. hit the trigger
+            * as long as the trigger is pushed keep firing
+            */
+                                
+            //roller and flywheel individual cmds
+            if (altJoystick.getRawButton(Constants.LOADER_ONLY_BUTTON))
+            {
+                loaderRollers.setRollerSpeed(Constants.LOADER_SPEED_ON);
+            }
+            else if (altJoystick.getRawButtonReleased(Constants.LOADER_ONLY_BUTTON))
+            {
+                loaderRollers.setRollerSpeed(Constants.LOADER_SPEED_OFF);
+            }
+            
+            if (altJoystick.getRawButton(Constants.FLYWHEEL_ONLY_BUTTON))
+            {
+                flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_ON);
+            }
+            else if (altJoystick.getRawButtonReleased(Constants.FLYWHEEL_ONLY_BUTTON))
+            {
+                flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_OFF);
+            }
+            else if (altJoystick.getRawButton(Constants.FLYWHEEL_ONLY_BUTTON) == false)
+            {
+                // !!!SID!!! XXX - debug - 3/26/22 - test only remove after debug
+                double velFr = falcon500ShooterFlyWheelFront.getSelectedSensorVelocity();
+                double velBa = falcon500ShooterFlyWheelBack.getSelectedSensorVelocity();
+                SmartDashboard.putNumber("flyWFrVel", velFr);
+                SmartDashboard.putNumber("flyWBaVel", velBa);  
+
+                SmartDashboard.getNumber("SmartDashboard/vxIn", vx);
+                SmartDashboard.putNumber("vxOut", vx);
+
+            }
+        }
+
+
+        SmartDashboard.putBoolean("driverAssistMode", driverAssistMode);
+        // move the robot using our driveTrain object
+        driveTrain.tankDrive(tankSpeed, driverAssistMode, false);
 
         /*
          * disabled: turret, flywheel.timed, 
@@ -356,8 +453,6 @@ private final DoubleSolenoid m_doubleSolenoid2 = new DoubleSolenoid(PneumaticsMo
         // SmartDashboard.putBoolean("driverAssistMode", driverAssistMode);
         // SmartDashboard.putNumber("intakeOnCount", intakeOnCount);
 
-        // move the robot -- our driveTrain object
-        driveTrain.tankDrive(tankSpeed, driverAssistMode);
     }
 }
 

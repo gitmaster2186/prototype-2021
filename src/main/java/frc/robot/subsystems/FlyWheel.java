@@ -8,30 +8,34 @@ import frc.robot.Constants;
 
 public class FlyWheel {
 
-    private WPI_TalonFX falcon500ShooterFlyWheel1;
-    private WPI_TalonFX falcon500ShooterFlyWheel2;
+    private WPI_TalonFX falcon500ShooterFlyWheelFront;
+    private WPI_TalonFX falcon500ShooterFlyWheelBack;
     
     // private double startTime = 0;
     // private int startballShootTimedCounter = 0;
     // private int stopballShootTimedCounter = 0;
     // private boolean shooterActive = false;
-    //private int startFireBallCounter = 0;
-    //private int stopFireBallCounter = 0;
+    private int startFireBallCounter = 0;
+    private int stopFireBallCounter = 0;
     // private SlewRateLimiter leftFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
     // private SlewRateLimiter rightFlyfilter = new SlewRateLimiter(Constants.FLY_WHEEL_RAMP_UP_POWER);
                                       
-    public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheel1,
-                    WPI_TalonFX inFalcon500ShooterFlyWheel2)
+    public FlyWheel(WPI_TalonFX inFalcon500ShooterFlyWheelFront,
+                    WPI_TalonFX inFalcon500ShooterFlyWheelBack)
                    
     {
-        falcon500ShooterFlyWheel1 = inFalcon500ShooterFlyWheel1;
-        falcon500ShooterFlyWheel2 = inFalcon500ShooterFlyWheel2;
+        falcon500ShooterFlyWheelFront = inFalcon500ShooterFlyWheelFront;
+        falcon500ShooterFlyWheelBack = inFalcon500ShooterFlyWheelBack;
 
-        falcon500ShooterFlyWheel1.configFactoryDefault();
-        falcon500ShooterFlyWheel2.configFactoryDefault();
+        falcon500ShooterFlyWheelFront.configFactoryDefault();
+        falcon500ShooterFlyWheelBack.configFactoryDefault();
 
-        falcon500ShooterFlyWheel1.setInverted(true);
-        falcon500ShooterFlyWheel2.setInverted(true);        
+        falcon500ShooterFlyWheelFront.setInverted(true);
+        falcon500ShooterFlyWheelBack.setInverted(true); 
+
+        // !!!SID!!! XXX - 3/31/22 - try making\one flywheel follow the other
+        // falcon500ShooterFlyWheelFront.follow(falcon500ShooterFlyWheelBack);
+        // falcon500ShooterFlyWheelBack.follow(falcon500ShooterFlyWheelFront);
     }
 
 
@@ -39,46 +43,58 @@ public class FlyWheel {
     /*
      * toggle the ball shooter flywheels on/off
      * 
-     * objects used: falcon500ShooterFlyWheel1, falcon500ShooterFlyWheel2
+     * objects used: falcon500ShooterFlyWheelFront, falcon500ShooterFlyWheelBack
      */
     public void setFlyWheelSpeed(double inFlySpeed)
     {
-        double speed;
         double xl;
         double xr;
+
         if (inFlySpeed == Constants.FLYWHEEL_OFF) 
         {
+            // shooterActive = false;
+
             xl = 0.0;
             xr = 0.0;
-            // shooterActive = false;
-            //stopFireBallCounter += 1;
-            // SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
+            stopFireBallCounter += 1;
+            SmartDashboard.putNumber("stopFireBallCounter", stopFireBallCounter);    
         }
         else
         {
-            speed = inFlySpeed;
             // shooterActive = true;
-            //startFireBallCounter += 1;
 
             // !!!SID!!! XXX - reenabled the ramp filters?
-            //xl = leftFlyfilter.calculate(speed);
+            // double speed;
+            // speed = inFlySpeed;
+            // xl = leftFlyfilter.calculate(speed);
             // xr = rightFlyfilter.calculate(speed);
 
-            xl = speed;
-            xr = speed;
-            // SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
+            xl = inFlySpeed;
+            xr = inFlySpeed;
+            startFireBallCounter += 1;
+            SmartDashboard.putNumber("startFireBallCounter", startFireBallCounter);    
         }
 
         // set the left flywheel speed
-        falcon500ShooterFlyWheel1.set(xl);
+//        falcon500ShooterFlyWheelFront.set(xl * 0.9825); // equal speed
+//        falcon500ShooterFlyWheelFront.set(xl * 0.8); // backspin test
+        falcon500ShooterFlyWheelFront.set(xl);
         // set the right flywheel speed
-        falcon500ShooterFlyWheel2.set(xr);
+        falcon500ShooterFlyWheelBack.set(xr);
+        // falcon500ShooterFlyWheelBack.set(1);
 
         // measure the velocity of each flywheel and display the data
         // on the dashboard for debug.
 
-        double vel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
-        SmartDashboard.putNumber("flyW2vel", vel2);
+        double velFr = falcon500ShooterFlyWheelFront.getSelectedSensorVelocity();
+        double velBa = falcon500ShooterFlyWheelBack.getSelectedSensorVelocity();
+        double velDiff = velFr - velBa;
+        double velRatio = velFr/velBa;
+        SmartDashboard.putNumber("flyWFrVel", velFr);
+        SmartDashboard.putNumber("flyWBaVel", velBa);
+        SmartDashboard.putNumber("velDiff", velDiff);
+        SmartDashboard.putNumber("velRatio", velRatio);
+
 
     }
 
@@ -86,8 +102,8 @@ public class FlyWheel {
     public boolean upToSpeed() 
     {
         boolean ret = false;
-        double flyVel1 = falcon500ShooterFlyWheel1.getSelectedSensorVelocity();
-        double flyVel2 = falcon500ShooterFlyWheel2.getSelectedSensorVelocity();
+        double flyVel1 = falcon500ShooterFlyWheelFront.getSelectedSensorVelocity();
+        double flyVel2 = falcon500ShooterFlyWheelBack.getSelectedSensorVelocity();
         if ((flyVel1 >= Constants.FLYWHEEL_MIN_VEL) &&
             (flyVel2 >= Constants.FLYWHEEL_MIN_VEL))
         {

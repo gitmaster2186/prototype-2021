@@ -76,15 +76,24 @@ public class DriveTrain {
         {
             System.out.println("Error set follow mode rear right");
         }
-        neoDriveTrainFrontRight.setInverted(true);
-        neoDriveTrainRearRight.setInverted(true);
+
+        // !!!SID!!! - XXX - 03/19/22 - old way of getting robot in correct direction
+        // neoDriveTrainFrontRight.setInverted(true);
+        // neoDriveTrainRearRight.setInverted(true);
+        // !!!SID!!! - XXX - 03/19/22 - now go the other way
+        neoDriveTrainFrontLeft.setInverted(true);
+        neoDriveTrainRearLeft.setInverted(true);
 
         // NEO motor specs: Hall-Sensor Encoder Resolution: 42 counts per rev
         neoDtFrontLeftEncoder  = neoDriveTrainFrontLeft.getEncoder();   
         neoDtFrontRightEncoder  = neoDriveTrainFrontRight.getEncoder();   
-
         drive = new DifferentialDrive(neoDriveTrainFrontLeft, 
-                                      neoDriveTrainFrontRight);                              
+                                      neoDriveTrainFrontRight); 
+        
+        // this value (0.2) is actually the default for the deadband.
+        // uncomment the next line to change the default deadband
+        // drive.setDeadband(0.02);
+                             
         //leftDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
         //rightDtfilter = new SlewRateLimiter(Constants.DRIVE_TRAIN_RAMP_UP_POWER);
         dtTimer = new OurTimer();
@@ -100,8 +109,12 @@ public class DriveTrain {
     public boolean aimAssist(TankSpeeds tankSpeed)
     {
         boolean gotTarget = false;
-        double Kp = -0.1;
-        double min_command = 0.05;
+//        double Kp = -0.03;
+//       double Kp = -0.04;
+       double Kp = 0.04;
+//        double Kp = -0.1;
+        //double min_command = 0.05;
+        double min_command = 0.11;
 
         NetworkTableEntry tv = limeLightTable.getEntry(Constants.LIMELIGHT_VALID_TARGETS);
         tankSpeed.targets = tv.getDouble(0.0);
@@ -148,16 +161,22 @@ public class DriveTrain {
                 */
                 double heading_error = -x;
                 double steering_adjust = 0.0f;
-                if (x > 1.0)
+                //double minAdj = 1.0;
+                //double minAdj = 0.5;
+                double minAdj = 0.3;
+
+                SmartDashboard.putNumber("limX", x);
+                if (x > minAdj)
                 {
                     steering_adjust = Kp*heading_error - min_command;
                 }
-                else if (x < 1.0)
+                else if (x < minAdj)
                 {
                     steering_adjust = Kp*heading_error + min_command;
                 }
                 SmartDashboard.putNumber("leftBefore", tankSpeed.leftSpeed);
                 SmartDashboard.putNumber("rightBefore", tankSpeed.rightSpeed);
+                SmartDashboard.putNumber("steering_adjust", steering_adjust);
 
                 tankSpeed.leftSpeed  += steering_adjust;
                 tankSpeed.rightSpeed -= steering_adjust;
@@ -318,34 +337,131 @@ public class DriveTrain {
     }
 
     // drive for the specified time the specified speed
+    // timer must be initialized before the 1st call with timerInit.
     // return timer expired state
-    public boolean timedMove(double time, double speeds)
+    public boolean timedMove(double time, double speedLeft, double speedRight, boolean autoMode)
     {
-        boolean ret = true;
+        boolean ret = dtTimer.timerTest(time);
 
         // has the timer expired?
-        if (dtTimer.timerTest(time) == false)
+        if (ret == false)
         {
-            TankSpeeds ts = new TankSpeeds(speeds, speeds);
+            TankSpeeds ts = new TankSpeeds(speedLeft, speedRight);
             
-            // go straight forward/backward
-            tankDrive(ts, false);
-
-            // return false because we're still running
-            ret = false;
+            // go forward/backward
+            tankDrive(ts, false, autoMode);
         }
         return ret;
     }
 
+    // Flip the driver flipped boolean.
+    // if flipped is true then drive reversed.
     public void flip()
     {
         flipped = !flipped;
     }
-    // our version of tankdrive
-    public void tankDrive(TankSpeeds tankSpeed, boolean driverAssistMode)
+
+    /*
+     * !!!SID!!! XXX - HACK - experimenting with adjusting drivetrain speeds side-to-side
+     * 
+     * problem - the robot seems faster on one side. This causes problems driving straight.
+     *   - initial thought this is a drivetrain issue
+     *   - have we eliminated the joysticks as the source of the problem?
+     *   - which side needs to be adjusted?
+     *     hack from yesterday: drive.tankDrive(xl, (xr+0.2)); -- right side
+     * 
+     * Adjustment:
+     *   - 1st version will add or subtract a constant from one side
+     *   - can we make a smarter version that can measure the motor speeds and 
+     *     adjust accordingly?
+     * 
+     * cases to handle:
+     * - 0 speed - don't adjust if near zero - like a deadband
+     *             If we don't handle this the robot will move when it should have stopped.
+     * - forward and backward have to be calculated differently i.e. a simple subtract
+     *   might make forward better but makes backwards worse.
+     * - initially hardcode the side to be changed and the constant
+     * - make it adjust left or right based on input parameters
+     * 
+     */
+    // private void alignSpeeds(TankSpeeds tankSpeed)
+    // {
+    //     // equiv to yesterday's dumb hack
+    //     tankSpeed.rightSpeed += 0.2;
+    // }
+
+    // !!!SID!!! XXX - 4/1/22 - debug - smooth drivetrain speeds
+    private void smoothSpeeds(TankSpeeds tankSpeed)
     {
-        double xl;
-        double xr;
+        boolean posSign = true;
+
+        // don't do ramp-up up/down
+        // tankSpeed.leftSpeed = leftDtfilter.calculate(tankSpeed.leftSpeed);
+        // tankSpeed.rightSpeed = rightDtfilter.calculate(tankSpeed.rightSpeed);
+        
+        if (tankSpeed.leftSpeed < 0)
+        {
+            posSign= false;
+        }
+        tankSpeed.leftSpeed *= tankSpeed.leftSpeed;
+        if (posSign == false)
+        {
+            tankSpeed.leftSpeed = -tankSpeed.leftSpeed;
+        }
+        posSign = true;
+        if (tankSpeed.rightSpeed < 0)
+        {
+            posSign= false;
+        }
+        tankSpeed.rightSpeed *= tankSpeed.rightSpeed;
+        if (posSign == false)
+        {
+            tankSpeed.rightSpeed = -tankSpeed.rightSpeed;
+        }
+    }
+
+    private static final double MIN_ADJ_SPEED = 0.2;
+    private static final double ADJ_SPEED_RATIO = 0.875;
+    private void alignSpeeds(TankSpeeds tankSpeed, boolean adjRight)
+    {
+        // only adjust if not stopped or moving slow
+        if ((Math.abs(tankSpeed.leftSpeed) > MIN_ADJ_SPEED) &&
+            (Math.abs(tankSpeed.rightSpeed) > MIN_ADJ_SPEED))
+        {
+
+            // which side are we adjusting?
+            if (adjRight == true)
+            {
+                tankSpeed.rightSpeed *= ADJ_SPEED_RATIO;
+            }
+            else
+            {
+                tankSpeed.leftSpeed *= ADJ_SPEED_RATIO;
+            }
+        }
+
+    }
+
+    /* 
+     * Our version of tankdrive. Different modes to modify the tank drive left and right speeds.
+     * It calls the real (wpilib) version of tank drive when we done messing with the left 
+     * and right speeds.
+     * 
+     * Modes:
+     *  driver assist mode - use the limelight to align with the target, no aligned sides
+     *  jflip mode - driver controlled, drive backward like forward  - flip aligned sides
+     *  autonomous mode - not driver controlled, no aligned sides
+     *  no mode - driver controlled, not autonomous, not jflip, not driver assist - just align sides
+     */
+    public void tankDrive(TankSpeeds tankSpeed, 
+                          boolean driverAssistMode,
+                          boolean autonomousMode)
+    {
+        double xl = 0;
+        double xr = 0;
+
+        SmartDashboard.putNumber("raw Right", tankSpeed.rightSpeed);
+        SmartDashboard.putNumber("raw Left", tankSpeed.leftSpeed);
 
         if (driverAssistMode == true)
         {
@@ -364,32 +480,51 @@ public class DriveTrain {
         }
         else
         {
+            // not driver assist mode driving
+
             // if we're not aiming the turret then make sure the LEDs are off
             //limeLightTable.getEntry(Constants.LIMELIGHT_LEDMODE).setNumber(Constants.LIMELIGHT_LEDS_OFF);
 
-            // do ramp-up up/down
-            // xl = leftDtfilter.calculate(tankSpeed.leftSpeed);
-            // xr = rightDtfilter.calculate(tankSpeed.rightSpeed);
+
+            // flip only makes sense when the driver is in control
+            if (flipped == true)
+            {
+                // drive like the back is the front when in flipped mode
+
+                double tmp = tankSpeed.leftSpeed;
+                tankSpeed.leftSpeed = -tankSpeed.rightSpeed;
+                tankSpeed.rightSpeed = -tmp;
+
+                // !!!SID!!! XXX - disabled 4/2/22 
+                // smoothSpeeds(tankSpeed);        
+
+                // adjust the speed if necessary 
+                // 2nd parameter is true if right side, false if left
+                // !!!SID!!! XXX - left or right adjustment needed?
+                alignSpeeds(tankSpeed, false); 
+            }
+            else
+            {
+                // only mess with speeds if we're not in autonomous mode
+                if (autonomousMode == false)
+                {
+                    // !!!SID!!! XXX - smoothSpeeds disabled 4/2/22
+                    // smoothSpeeds(tankSpeed);        
+
+                    alignSpeeds(tankSpeed, true); 
+                }
+            }
+
             xl = tankSpeed.leftSpeed;
             xr = tankSpeed.rightSpeed;
         }
-
+        
+        SmartDashboard.putBoolean("isFlipped", flipped);
 
         SmartDashboard.putNumber("xl", xl);
         SmartDashboard.putNumber("xr", xr);
-
-        // SmartDashboard.putNumber("leftPos", 
-        //                          neoDtFrontLeftEncoder.getPosition());
-        // SmartDashboard.putNumber("rightPos", 
-        //                         neoDtFrontRightEncoder.getPosition());
-        if (flipped == true)
-        {
-            double tmp = xl;
-            xl = -xr;
-            xr = -tmp;
-            SmartDashboard.putBoolean("isFlipped", flipped);
-        }
-
+        SmartDashboard.putNumber("x Diff", (xr-xl));
+        
         drive.tankDrive(xl, xr);
     }
 }
@@ -421,3 +556,7 @@ public class DriveTrain {
         // final double LOW_OUT_LIMIT_2 = -180.0;
         // final double HIGH_OUT_LIMIT_2 = 180.0;
         // PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+        // SmartDashboard.putNumber("leftPos", 
+        //                          neoDtFrontLeftEncoder.getPosition());
+        // SmartDashboard.putNumber("rightPos", 
+        //                         neoDtFrontRightEncoder.getPosition());

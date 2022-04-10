@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.utils.TankSpeeds;
 
@@ -8,28 +9,34 @@ public class BallShooter {
     LoaderRollers loaderRollers;
     FlyWheel flyWheel;
     DriveTrain driveTrain;
+    DigitalInput loaderLimitSwitch;
     int ballCount = 0;
+    boolean limitSwHit;
 
-   public BallShooter(Intake inIntake, LoaderRollers inLoaderRollers, FlyWheel inFlyWheel, DriveTrain inDriveTrain)
+   public BallShooter(Intake inIntake, LoaderRollers inLoaderRollers, FlyWheel inFlyWheel, DriveTrain inDriveTrain, DigitalInput inLoaderLimitSwitch)
    {
     intake = inIntake;
     loaderRollers = inLoaderRollers;
     flyWheel = inFlyWheel;
     driveTrain = inDriveTrain;
+    loaderLimitSwitch = inLoaderLimitSwitch;
     // setting this to 1 because we start with 1 loaded for autonomous mode
     setBallCount(1);
+    limitSwHit = false;
    } 
    
    public boolean manualReject()
    {
         return activate(Constants.LOADER_SPEED_ON,
-                        Constants.FLYWHEEL_REJECT_SPEED);
+                        Constants.FLYWHEEL_REJECT_SPEED,
+                        false, false);
    }
 
    public boolean  manualStop()
    {
         return activate(Constants.LOADER_SPEED_OFF,
-                        Constants.FLYWHEEL_OFF);
+                        Constants.FLYWHEEL_OFF,
+                        false, false);
    }
 
     /*
@@ -41,18 +48,31 @@ public class BallShooter {
      * Return true of the loaders where turned on (ball shot)
      * 
      */
-   public boolean activate(double inLoaderSpeed, double inFlySpeed)
+   public boolean activate(double inLoaderSpeed, double inFlySpeed, boolean useSw, boolean automode)
    {
        boolean ret = false; 
+
        // System.out.println("activate " + dbgCount);
+    //    if ((loaderLimitSwitch.get() == true) || (useSw == false))
+    //    {
+           limitSwHit = true;
+    //    }
 
        if (inLoaderSpeed > Constants.LOADER_SPEED_OFF)
        {
+           // !!!SID!!! XXX - 4/7/22 - if NOT in automode scale speed down
+           if (automode == false)
+           {
+              // inFlySpeed = inFlySpeed * 0.99; // equal speed 0.99 good
+              inFlySpeed = inFlySpeed * 0.99; // equal speed 0.98 good
+              // inFlySpeed = inFlySpeed * 0.97; // equal speed 0.97 bad
+           }
+
            // make sure the flywheel is on
            flyWheel.setFlyWheelSpeed(inFlySpeed);
 
            // if the flywheels are already up to speed then turn on the loaders
-           if (flyWheel.upToSpeed() == true)
+           if ((flyWheel.upToSpeed() == true) && (limitSwHit == true))
            {
 
                // turn the loader motors on
@@ -67,7 +87,8 @@ public class BallShooter {
            // done shooting. turn the loader and flywheel motors off
            loaderRollers.setRollerSpeed(Constants.LOADER_SPEED_OFF);
            flyWheel.setFlyWheelSpeed(Constants.FLYWHEEL_OFF);
-       }
+           limitSwHit = false;
+        }
 
        // add -1 to ballCount
        // incBallCount(-1);
@@ -76,17 +97,17 @@ public class BallShooter {
    }   
 
 
-   public void autoShoot(TankSpeeds tankSpeed)
-   {
-        driveTrain.tankDrive(tankSpeed, true);
+//    public void autoShoot(TankSpeeds tankSpeed, boolean useSw)
+//    {
+//         driveTrain.tankDrive(tankSpeed, true, true);
 
-       // do we have the target?
-       if (tankSpeed.targets > 0)
-        {
-            // yes. shoot the ball
-            activate(Constants.LOADER_SPEED_ON, Constants.FLYWHEEL_ON);
-        }
-   }
+//        // do we have the target?
+//        if (tankSpeed.targets > 0)
+//         {
+//             // yes. shoot the ball
+//             activate(Constants.LOADER_SPEED_ON, Constants.FLYWHEEL_ON, useSw);
+//         }
+//    }
 
    public void setBallCount(int count)
    {

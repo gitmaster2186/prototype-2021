@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -24,11 +25,14 @@ public class Climber {
      */
     public void climb(int direction)
     {  
-       Value value = DoubleSolenoid.Value.kForward;
+       Value value = DoubleSolenoid.Value.kReverse;
        if (direction == Constants.CLIMBER_DOWN_DIRECTION)
        {
-         value = DoubleSolenoid.Value.kReverse;
+         value = DoubleSolenoid.Value.kForward;
        }
+       SmartDashboard.putString("left  climber", value.toString());
+       SmartDashboard.putString("right climber", value.toString());
+
        m_doubleSolenoidLeft.set(value);
        m_doubleSolenoidRight.set(value);
     }
