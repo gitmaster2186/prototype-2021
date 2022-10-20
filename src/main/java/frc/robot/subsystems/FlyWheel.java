@@ -88,7 +88,7 @@ public class FlyWheel {
         shooterFlyWheelFront.set(xl * Constants.FLY_WHEEL_SCALING); // backspin test
         //shooterFlyWheelFront.set(xl);
         // set the right flywheel speed
-        // shooterFlyWheelBack.set(xr);
+        // shooterFlyWheelBack.set(xr); 
         shooterFlyWheelBack.set(xr * Constants.FLY_WHEEL_SCALING);
         // shooterFlyWheelBack.set(1);
 
