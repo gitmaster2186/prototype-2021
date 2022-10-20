@@ -68,8 +68,8 @@ public class Constants {
     public static final int SPARK_NEO550_BACK_LOADER_CAN_ID = 9;
 
     // flywheels
-    public static final int FALCON500_FRONT_FLYWHEEL_CAN_ID = 5;
-    public static final int FALCON500_BACK_FLYWHEEL_CAN_ID = 8;
+    public static final int FRONT_FLYWHEEL_CAN_ID = 6;
+    public static final int BACK_FLYWHEEL_CAN_ID = 8;
 
     // turret
     public static final int SPARK_NEO550_TURRET_CAN_ID = 8;
@@ -111,7 +111,9 @@ public class Constants {
 
     // for flywheel up to speed test
 //    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this
-    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this 150000
+//    public static final double FLYWHEEL_MIN_VEL = 20000.0; // !!!SID!!! XXX - tune this 150000
+//    public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
+    public static final double FLYWHEEL_MIN_VEL = 2000.0; // !!!SID!!! XXX - tune this 150000
     public static final double FLYWHEEL_ACTIVE_TIME = 1.0;
 
     /* 
@@ -159,5 +161,6 @@ public class Constants {
     public static final String LIMELIGHT_VERTICAL_OFFSET =  "ty";
     public static final String LIMELIGHT_TARGET_AREA =  "ta";
     public static final String LIMELIGHT_LEDMODE = "ledMode";
-
+    public static final double FLY_WHEEL_SCALING =  0.65;
+    
 }
