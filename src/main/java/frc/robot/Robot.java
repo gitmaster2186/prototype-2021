@@ -26,9 +26,9 @@
  */
 package frc.robot;
 
-import javax.print.attribute.standard.Compression;
+//import javax.print.attribute.standard.Compression;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+//import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -40,9 +40,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.PowerDistribution;
+//import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+//import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import frc.robot.subsystems.FlyWheel;
@@ -107,22 +107,26 @@ public class Robot extends TimedRobot
                                                 Constants.RIGHT_FIRST_PCM_PORT,  // PCM port 
                                                 Constants.RIGHT_SECOND_PCM_PORT); // PCM port 
 
-    private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_INTAKE_CAN_ID, MotorType.kBrushless);
+    //private CANSparkMax neo550ShooterFrontIntake  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_INTAKE_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterRearIntake   = new CANSparkMax(Constants.SPARK_NEO550_BACK_INTAKE_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterLoaderRollerFront  = new CANSparkMax(Constants.SPARK_NEO550_FRONT_LOADER_CAN_ID, MotorType.kBrushless);
     private CANSparkMax neo550ShooterLoaderRollerBack  = new CANSparkMax(Constants.SPARK_NEO550_BACK_LOADER_CAN_ID, MotorType.kBrushless);
 
-    private WPI_TalonFX falcon500ShooterFlyWheelFront = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
-    private WPI_TalonFX falcon500ShooterFlyWheelBack = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
-  
-    private Intake intake = new Intake(neo550ShooterFrontIntake, 
-                                       neo550ShooterRearIntake); 
+    private Intake intake = new Intake(neo550ShooterRearIntake); 
 
     // private CANSparkMax neo550ShooterTurret = new CANSparkMax(Constants.SPARK_NEO550_TURRET_CAN_ID, MotorType.kBrushless);
     // private Turret turret = new Turret(neo550ShooterTurret);
 
-    private FlyWheel flyWheel = new FlyWheel(falcon500ShooterFlyWheelFront, 
-                                             falcon500ShooterFlyWheelBack);
+    /*
+    !!!old way!!!
+    private WPI_TalonFX shooterFlyWheelFront = new WPI_TalonFX(Constants.FALCON500_FRONT_FLYWHEEL_CAN_ID);
+    private WPI_TalonFX shooterFlyWheelBack = new WPI_TalonFX(Constants.FALCON500_BACK_FLYWHEEL_CAN_ID);
+  
+    private FlyWheel flyWheel = new FlyWheel(shooterFlyWheelFront, 
+                                             shooterFlyWheelBack);
+*/
+     // !!!NEW WAY!!!
+     private FlyWheel flyWheel = new FlyWheel();
 
      private LoaderRollers loaderRollers = new LoaderRollers (neo550ShooterLoaderRollerFront,
                                                               neo550ShooterLoaderRollerBack,
@@ -415,10 +419,10 @@ public class Robot extends TimedRobot
             else if (altJoystick.getRawButton(Constants.FLYWHEEL_ONLY_BUTTON) == false)
             {
                 // !!!SID!!! XXX - debug - 3/26/22 - test only remove after debug
-                double velFr = falcon500ShooterFlyWheelFront.getSelectedSensorVelocity();
-                double velBa = falcon500ShooterFlyWheelBack.getSelectedSensorVelocity();
-                SmartDashboard.putNumber("flyWFrVel", velFr);
-                SmartDashboard.putNumber("flyWBaVel", velBa);  
+                // double velFr = shooterFlyWheelFront.getSelectedSensorVelocity();
+                // double velBa = shooterFlyWheelBack.getSelectedSensorVelocity();
+                // SmartDashboard.putNumber("flyWFrVel", velFr);
+                // SmartDashboard.putNumber("flyWBaVel", velBa);  
 
                 SmartDashboard.getNumber("SmartDashboard/vxIn", vx);
                 SmartDashboard.putNumber("vxOut", vx);

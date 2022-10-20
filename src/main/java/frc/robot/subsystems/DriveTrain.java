@@ -185,7 +185,7 @@ public class DriveTrain {
                 SmartDashboard.putNumber("leftAfter", tankSpeed.leftSpeed);
                 SmartDashboard.putNumber("rightAfter", tankSpeed.rightSpeed);
 
-                // !!!SID!!! - XXX - debug
+                // !!!SID!!! - XXX - 
                 NetworkTableEntry txx = limeLightTable.getEntry("tx"); 
                 double xx = txx.getDouble(0.0);
                 SmartDashboard.putNumber("tx", xx);

@@ -8,25 +8,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Intake {
-    private CANSparkMax neo550ShooterFrontIntake;
+    //private CANSparkMax neo550ShooterFrontIntake;
     private CANSparkMax neo550ShooterRearIntake;
     private RelativeEncoder neo550ShooterFrontIntakeEncoder;   
     private SlewRateLimiter intakeFilter;
     private int calledCount = 0;
 
     // intake constructor
-    public Intake(CANSparkMax inNeo550ShooterFrontIntake,
-                  CANSparkMax inNeo550ShooterRearIntake)
+    public Intake(CANSparkMax inNeo550ShooterRearIntake)
     {
-        neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
+        //neo550ShooterFrontIntake = inNeo550ShooterFrontIntake;
         neo550ShooterRearIntake  = inNeo550ShooterRearIntake;
-        neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder(); 
+        //neo550ShooterFrontIntakeEncoder = neo550ShooterFrontIntake.getEncoder(); 
 
-        neo550ShooterFrontIntake.restoreFactoryDefaults();
+        //neo550ShooterFrontIntake.restoreFactoryDefaults();
         neo550ShooterRearIntake.restoreFactoryDefaults();
         
-        SmartDashboard.putNumber("FrontIntake position",
-                                 neo550ShooterFrontIntakeEncoder.getPosition());
 
         intakeFilter = new SlewRateLimiter(Constants.INTAKE_RAMP_UP_POWER);
         intakeFilter.reset(Constants.INTAKE_FILTER_START_VALUE);
@@ -60,7 +57,7 @@ public class Intake {
         }
 
         // set the speeds on both intakes
-        neo550ShooterFrontIntake.set(fltSpeed);
+        //neo550ShooterFrontIntake.set(fltSpeed);
         neo550ShooterRearIntake.set(fltSpeed);
 
         
